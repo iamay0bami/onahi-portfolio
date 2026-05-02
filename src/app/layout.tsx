@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <div className="grain-overlay" aria-hidden="true" />
+        <div className="grain" aria-hidden="true" />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

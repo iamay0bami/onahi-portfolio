@@ -1,45 +1,45 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
-  const bioRef = useRef<HTMLDivElement>(null);
-  const imagesRef = useRef<HTMLDivElement>(null);
+  const hlRef      = useRef<HTMLDivElement>(null);
+  const bioRef     = useRef<HTMLDivElement>(null);
+  const img1Ref    = useRef<HTMLDivElement>(null);
+  const img2Ref    = useRef<HTMLDivElement>(null);
+  const circleRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(headlineRef.current,
-        { y: 60, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 1, ease: "power3.out",
-          scrollTrigger: { trigger: headlineRef.current, start: "top 80%" }
-        }
+      gsap.fromTo(hlRef.current,
+        { y: 55, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out",
+          scrollTrigger: { trigger: hlRef.current, start: "top 82%" } }
       );
-
       gsap.fromTo(bioRef.current,
-        { y: 40, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
-          scrollTrigger: { trigger: bioRef.current, start: "top 80%" }
-        }
+        { y: 35, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
+          scrollTrigger: { trigger: bioRef.current, start: "top 82%" } }
       );
-
-      gsap.fromTo(imagesRef.current?.children ?? [],
-        { y: 60, opacity: 0, scale: 0.95 },
-        {
-          y: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out",
-          stagger: 0.15,
-          scrollTrigger: { trigger: imagesRef.current, start: "top 80%" }
-        }
+      gsap.fromTo(img1Ref.current,
+        { y: 60, opacity: 0, rotate: -5 },
+        { y: 0, opacity: 1, rotate: -4, duration: 1.1, ease: "power3.out",
+          scrollTrigger: { trigger: img1Ref.current, start: "top 85%" } }
+      );
+      gsap.fromTo(img2Ref.current,
+        { y: 80, opacity: 0, rotate: 3 },
+        { y: 0, opacity: 1, rotate: 5, duration: 1.1, ease: "power3.out", delay: 0.12,
+          scrollTrigger: { trigger: img2Ref.current, start: "top 85%" } }
+      );
+      gsap.fromTo(circleRef.current,
+        { scale: 0.75, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
+          scrollTrigger: { trigger: circleRef.current, start: "top 85%" } }
       );
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
@@ -47,151 +47,165 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
+      className="pinstripe"
       style={{
-        padding: "clamp(80px, 12vw, 160px) clamp(24px, 6vw, 80px)",
-        background: "var(--bg-warm)",
+        background: "var(--cream-warm)",
         position: "relative",
+        padding: "clamp(80px, 12vw, 160px) var(--container-pad)",
         overflow: "hidden",
       }}
     >
-      {/* Decorative background glow */}
-      <div style={{
-        position: "absolute",
-        left: "-20%",
-        top: "50%",
-        transform: "translateY(-50%)",
-        width: "500px",
-        height: "500px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(200,134,42,0.06) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
+      <div className="wrap">
 
-      <div style={{ maxWidth: "var(--container-max)", margin: "0 auto" }}>
-
-        {/* Top row: headline + bio */}
+        {/* TOP — headline + bio */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "clamp(40px, 8vw, 100px)",
+          gap: "clamp(36px, 8vw, 96px)",
           alignItems: "start",
-          marginBottom: "clamp(60px, 10vw, 120px)",
-        }} className="about-grid">
-          <div ref={headlineRef}>
+          marginBottom: "clamp(64px, 10vw, 120px)",
+        }} className="about-top">
+
+          <div ref={hlRef}>
             <h2 style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(44px, 7vw, 100px)",
-              lineHeight: 0.92,
-              letterSpacing: "-0.02em",
-              color: "var(--cream)",
+              fontFamily: "var(--font-serif)", fontWeight: 300,
+              fontSize: "clamp(44px, 7vw, 96px)",
+              lineHeight: 0.9, letterSpacing: "-0.02em",
+              color: "var(--charcoal)",
             }}>
-              Hi, I&apos;m{" "}
-              <span style={{ fontStyle: "italic", color: "var(--gold)" }}>Onahi</span>
-              .
+              Hi there, I&apos;m<br/>
+              <em style={{ fontStyle: "italic" }}>Onahi.</em>
             </h2>
             <div style={{ marginTop: "20px" }}>
-              <span className="pill">Also Ona, or Nahi</span>
+              <span style={{
+                display: "inline-block",
+                fontFamily: "var(--font-sans)", fontSize: "13px", fontWeight: 300,
+                letterSpacing: "0.04em", color: "var(--charcoal-soft)",
+                border: "1px solid rgba(28,28,26,0.22)",
+                borderRadius: "100px", padding: "6px 16px",
+              }}>Also Ona, or Nahi</span>
             </div>
           </div>
 
           <div ref={bioRef} style={{ paddingTop: "8px" }}>
             <p style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "clamp(15px, 1.5vw, 18px)",
-              fontWeight: 300,
-              color: "var(--cream-muted)",
-              lineHeight: 1.8,
-              marginBottom: "20px",
+              fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.4vw, 17px)",
+              fontWeight: 300, lineHeight: 1.8, color: "var(--charcoal-soft)",
+              marginBottom: "18px",
             }}>
-              A Lagos-rooted Creative Director, Curator, and Media Founder with a
-              deep love for African culture, music, and storytelling.
+              A Lagos-rooted creative director, curator, and media founder with a deep love
+              for African culture, music, and storytelling.
             </p>
             <p style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "clamp(15px, 1.5vw, 18px)",
-              fontWeight: 300,
-              color: "var(--cream-muted)",
-              lineHeight: 1.8,
+              fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.4vw, 17px)",
+              fontWeight: 300, lineHeight: 1.8, color: "var(--charcoal-soft)",
             }}>
               I am the founder of{" "}
-              <span style={{ color: "var(--gold)", fontWeight: 400 }}>Afronated</span>
-              {" "}— a creative media collective amplifying African voices through
-              powerful storytelling, spotlight interviews, and cultural excellence.
-              A big part of my life is building spaces where African creativity gets
-              to be undeniable.
+              <strong style={{ fontWeight: 500, color: "var(--charcoal)" }}>Afronated</strong>
+              {" "}— a creative media collective amplifying African voices through powerful
+              storytelling, spotlight interviews, and cultural excellence. A big part of my
+              life is building spaces where African creativity gets to be undeniable.
             </p>
           </div>
         </div>
 
-        {/* Image pair */}
-        <div
-          ref={imagesRef}
-          style={{
-            display: "flex",
-            gap: "clamp(16px, 3vw, 32px)",
-            justifyContent: "center",
-            alignItems: "flex-end",
-            flexWrap: "wrap",
-          }}
-        >
-          {/* Image 1 */}
-          <div style={{
-            width: "clamp(220px, 30vw, 400px)",
-            aspectRatio: "3/4",
-            borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
-            overflow: "hidden",
-            position: "relative",
-            background: "linear-gradient(135deg, #1a1410 0%, #2a1f18 50%, #1a2318 100%)",
-            flexShrink: 0,
+        {/* BOTTOM — diary-style photo pair + spinning circle */}
+        <div style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          gap: "clamp(12px, 3vw, 32px)",
+          flexWrap: "wrap",
+          position: "relative",
+        }}>
+
+          {/* Green soft circle behind the photos — reference detail */}
+          <div ref={circleRef} style={{
+            position: "absolute",
+            left: "50%", bottom: "-20px",
+            transform: "translateX(-50%)",
+            width: "clamp(220px, 32vw, 420px)",
+            height: "clamp(220px, 32vw, 420px)",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(184,191,168,0.6) 0%, rgba(184,191,168,0.15) 70%, transparent 100%)",
+            zIndex: 0,
+          }} aria-hidden="true" />
+
+          {/* Photo 1 — larger, tilted left */}
+          <div ref={img1Ref} className="photo-frame" style={{
+            width: "clamp(180px, 26vw, 340px)",
+            height: "clamp(240px, 34vw, 440px)",
+            transform: "rotate(-4deg)",
+            position: "relative", zIndex: 2,
+            borderRadius: "4px",
           }}>
+            {/* Placeholder — user replaces with <img> */}
             <div style={{
-              position: "absolute", inset: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexDirection: "column", gap: "8px",
+              width: "100%", height: "100%",
+              background: "linear-gradient(160deg, #c8c4b8 0%, #b0ad9d 100%)",
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: "8px",
             }}>
               <div style={{
-                width: 60, height: 60, borderRadius: "50%",
-                background: "rgba(200,134,42,0.2)",
+                width: 52, height: 52, borderRadius: "50%",
+                border: "1.5px solid rgba(28,28,26,0.2)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <span style={{ fontFamily: "var(--font-serif)", fontSize: "24px", color: "var(--gold)", fontStyle: "italic" }}>O</span>
+                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "22px", color: "rgba(28,28,26,0.45)" }}>O</span>
               </div>
-              <span style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "var(--cream-muted)", opacity: 0.5, letterSpacing: "0.1em" }}>PHOTO</span>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.3)", textTransform: "uppercase" }}>Photo</span>
             </div>
           </div>
 
-          {/* Image 2 — tilted */}
-          <div style={{
-            width: "clamp(180px, 24vw, 320px)",
-            aspectRatio: "3/4",
-            borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
-            overflow: "hidden",
-            position: "relative",
-            background: "linear-gradient(135deg, #201a14 0%, #1a2318 100%)",
-            transform: "rotate(4deg) translateY(-20px)",
-            flexShrink: 0,
+          {/* Photo 2 — smaller, tilted right */}
+          <div ref={img2Ref} className="photo-frame" style={{
+            width: "clamp(140px, 20vw, 260px)",
+            height: "clamp(180px, 26vw, 340px)",
+            transform: "rotate(5deg) translateY(-18px)",
+            position: "relative", zIndex: 3,
+            borderRadius: "4px",
           }}>
             <div style={{
-              position: "absolute", inset: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexDirection: "column", gap: "8px",
+              width: "100%", height: "100%",
+              background: "linear-gradient(160deg, #bfbcb2 0%, #a8a598 100%)",
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: "8px",
             }}>
               <div style={{
-                width: 48, height: 48, borderRadius: "50%",
-                background: "rgba(181,82,46,0.2)",
+                width: 40, height: 40, borderRadius: "50%",
+                border: "1.5px solid rgba(28,28,26,0.2)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <span style={{ fontFamily: "var(--font-serif)", fontSize: "20px", color: "var(--terracotta)", fontStyle: "italic" }}>O</span>
+                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "17px", color: "rgba(28,28,26,0.45)" }}>O</span>
               </div>
-              <span style={{ fontFamily: "var(--font-sans)", fontSize: "11px", color: "var(--cream-muted)", opacity: 0.5, letterSpacing: "0.1em" }}>PHOTO</span>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.3)", textTransform: "uppercase" }}>Photo</span>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Spinning circular text — exactly like the reference, portrait overlapping */}
+      <div style={{
+        position: "absolute",
+        right: "clamp(20px, 5vw, 80px)", top: "50%",
+        transform: "translateY(-50%)",
+        width: "clamp(110px, 14vw, 180px)",
+        height: "clamp(110px, 14vw, 180px)",
+        zIndex: 4,
+      }}>
+        <svg className="spin-ccw" viewBox="0 0 180 180" style={{ width: "100%", height: "100%", opacity: 0.45 }}>
+          <defs>
+            <path id="abt-ring" d="M 90,90 m -68,0 a 68,68 0 1,1 136,0 a 68,68 0 1,1 -136,0" />
+          </defs>
+          <text style={{ fontFamily: "var(--font-sans)", fontSize: "9.5px", fill: "var(--charcoal)", letterSpacing: "4.5px" }}>
+            <textPath href="#abt-ring">CREATIVE DIRECTOR · CURATOR · FOUNDER ·</textPath>
+          </text>
+        </svg>
+      </div>
+
       <style jsx>{`
         @media (max-width: 768px) {
-          .about-grid { grid-template-columns: 1fr !important; }
+          .about-top { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>

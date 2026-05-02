@@ -1,74 +1,42 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 export default function Hero() {
-  const containerRef = useRef<HTMLElement>(null);
-  const firstNameRef = useRef<HTMLDivElement>(null);
-  const lastNameRef = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLDivElement>(null);
-  const circleRef = useRef<HTMLDivElement>(null);
-  const spinRef = useRef<SVGSVGElement>(null);
-  const scrollHintRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const firstName = useRef<HTMLDivElement>(null);
+  const lastName  = useRef<HTMLDivElement>(null);
+  const subRef    = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.2 });
+      const tl = gsap.timeline({ delay: 0.3 });
 
-      // Organic circle entrance
-      tl.fromTo(circleRef.current,
-        { scale: 0.6, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.4, ease: "power3.out" }
-      );
-
-      // First name
-      tl.fromTo(firstNameRef.current,
-        { y: 80, opacity: 0, clipPath: "inset(0 0 100% 0)" },
-        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power4.out" },
-        "-=0.9"
-      );
-
-      // Last name
-      tl.fromTo(lastNameRef.current,
-        { y: 80, opacity: 0, clipPath: "inset(0 0 100% 0)" },
-        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.0, ease: "power4.out" },
+      tl.fromTo(firstName.current,
+        { y: 70, opacity: 0, clipPath: "inset(0 0 100% 0)" },
+        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.1, ease: "power4.out" }
+      )
+      .fromTo(lastName.current,
+        { y: 70, opacity: 0, clipPath: "inset(0 0 100% 0)" },
+        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.1, ease: "power4.out" },
         "-=0.75"
-      );
-
-      // Subtitle
-      tl.fromTo(subtitleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
-        "-=0.4"
-      );
-
-      // Scroll hint
-      tl.fromTo(scrollHintRef.current,
+      )
+      .fromTo(subRef.current,
+        { y: 28, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" },
+        "-=0.45"
+      )
+      .fromTo(scrollRef.current,
         { opacity: 0 },
         { opacity: 1, duration: 0.6 },
         "-=0.2"
       );
 
-      // Floating animation on circle
-      gsap.to(circleRef.current, {
-        y: -20,
-        duration: 4,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
+      // Scroll hint bob
+      gsap.to(scrollRef.current, { y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
-      // Scroll hint pulse
-      gsap.to(scrollHintRef.current, {
-        y: 8,
-        duration: 1.5,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-
-    }, containerRef);
+    }, sectionRef);
 
     return () => ctx.revert();
   }, []);
@@ -76,174 +44,89 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      ref={containerRef}
+      ref={sectionRef}
+      className="pinstripe"
       style={{
         minHeight: "100vh",
+        background: "var(--sage)",
+        position: "relative",
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        position: "relative",
-        overflow: "hidden",
-        padding: "120px clamp(24px, 6vw, 80px) 80px",
+        padding: "120px var(--container-pad) 80px",
       }}
     >
-      {/* Background gradient */}
+      {/* The organic textured circle behind the name — key reference detail */}
       <div style={{
         position: "absolute",
-        inset: 0,
-        background: "radial-gradient(ellipse 80% 60% at 60% 50%, rgba(181,82,46,0.08) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
+        top: "50%", left: "50%",
+        transform: "translate(-18%, -50%)",
+        width: "clamp(260px, 40vw, 560px)",
+        height: "clamp(260px, 40vw, 560px)",
+        borderRadius: "50%",
+        background: [
+          "radial-gradient(circle at 40% 40%,",
+          "rgba(107,117,96,0.55) 0%,",
+          "rgba(107,117,96,0.3) 50%,",
+          "rgba(90,100,80,0.15) 100%)",
+        ].join(" "),
+        filter: "blur(0px)",
+        zIndex: 0,
+        backgroundImage: `
+          radial-gradient(circle at 40% 40%, rgba(80,90,70,0.6), rgba(100,110,85,0.35) 60%, transparent 85%),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E")
+        `,
+        backgroundSize: "cover",
+        backgroundBlendMode: "multiply",
+      }} aria-hidden="true" />
 
-      {/* Organic decorative circle */}
-      <div
-        ref={circleRef}
-        style={{
-          position: "absolute",
-          right: "clamp(-100px, -5vw, -60px)",
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: "clamp(320px, 45vw, 680px)",
-          height: "clamp(320px, 45vw, 680px)",
-          borderRadius: "60% 40% 70% 30% / 50% 60% 40% 50%",
-          background: "linear-gradient(135deg, rgba(181,82,46,0.18) 0%, rgba(45,74,53,0.14) 50%, rgba(200,134,42,0.1) 100%)",
-          filter: "blur(1px)",
-        }}
-      />
+      {/* Name stack */}
+      <div style={{ position: "relative", zIndex: 2, maxWidth: "var(--container-max)", margin: "0 auto", width: "100%" }}>
+        <div ref={firstName} style={{
+          fontFamily: "var(--font-serif)", fontWeight: 300,
+          fontSize: "clamp(76px, 13vw, 200px)",
+          lineHeight: 0.88, letterSpacing: "-0.025em",
+          color: "var(--charcoal)",
+        }}>Onahi</div>
 
-      {/* Spinning circular text */}
-      <div
-        style={{
-          position: "absolute",
-          right: "clamp(40px, 8vw, 120px)",
-          top: "50%",
-          transform: "translateY(-50%)",
-          width: "clamp(140px, 16vw, 220px)",
-          height: "clamp(140px, 16vw, 220px)",
-        }}
-      >
-        <svg
-          ref={spinRef}
-          className="spin-slow"
-          viewBox="0 0 220 220"
-          style={{ width: "100%", height: "100%", opacity: 0.5 }}
-        >
-          <defs>
-            <path
-              id="circle-path"
-              d="M 110,110 m -80,0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0"
-            />
-          </defs>
-          <text
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "11px",
-              fill: "var(--gold)",
-              letterSpacing: "4px",
-            }}
-          >
-            <textPath href="#circle-path">
-              CREATIVE DIRECTION · CURATION · AFRONATED ·
-            </textPath>
-          </text>
-        </svg>
-      </div>
+        <div ref={lastName} style={{
+          fontFamily: "var(--font-serif)", fontWeight: 300, fontStyle: "italic",
+          fontSize: "clamp(76px, 13vw, 200px)",
+          lineHeight: 0.88, letterSpacing: "-0.02em",
+          color: "var(--charcoal)",
+          marginTop: "clamp(4px, 0.5vw, 10px)",
+        }}>Ijeh.</div>
 
-      {/* Main content */}
-      <div style={{
-        position: "relative",
-        zIndex: 2,
-        maxWidth: "var(--container-max)",
-        margin: "0 auto",
-        width: "100%",
-      }}>
-        <div
-          ref={firstNameRef}
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(80px, 14vw, 220px)",
-            lineHeight: 0.88,
-            letterSpacing: "-0.03em",
-            color: "var(--cream)",
-            willChange: "transform",
-          }}
-        >
-          Onahi
-        </div>
-
-        <div
-          ref={lastNameRef}
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
-            fontSize: "clamp(80px, 14vw, 220px)",
-            lineHeight: 0.88,
-            letterSpacing: "-0.02em",
-            color: "var(--gold)",
-            marginTop: "clamp(4px, 0.5vw, 12px)",
-            willChange: "transform",
-          }}
-        >
-          Ijeh.
-        </div>
-
-        <div
-          ref={subtitleRef}
-          style={{
-            marginTop: "clamp(28px, 4vw, 48px)",
-            display: "flex",
-            alignItems: "center",
-            gap: "clamp(12px, 2vw, 24px)",
-            flexWrap: "wrap",
-          }}
-        >
+        {/* Quote beneath the name — mirrors the reference's second-screen quote */}
+        <div ref={subRef} style={{
+          marginTop: "clamp(24px, 4vw, 44px)",
+          maxWidth: "500px",
+        }}>
           <p style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "clamp(14px, 1.5vw, 18px)",
-            fontWeight: 300,
-            color: "var(--cream-muted)",
-            maxWidth: "460px",
-            lineHeight: 1.7,
+            fontFamily: "var(--font-serif)", fontStyle: "italic",
+            fontSize: "clamp(17px, 2vw, 23px)",
+            fontWeight: 300, lineHeight: 1.55,
+            color: "var(--charcoal-soft)",
           }}>
-            I turn creative ideas into visuals that live and breathe online.
-            With a background in music, media, and youth culture — I know what
-            clicks, what resonates, and what doesn&apos;t.
+            At the heart of <em style={{ fontStyle: "normal", fontWeight: 500 }}>Culture</em> is
+            an opportunity to{" "}
+            <em style={{ fontStyle: "italic" }}>tell stories.</em>
           </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <span className="pill">Founder, Afronated</span>
-            <span className="pill" style={{ fontSize: "12px" }}>Lagos-rooted · Globally minded</span>
-          </div>
+          <div style={{
+            width: "60px", height: "2px", marginTop: "16px",
+            background: "var(--sage-deep)",
+          }} />
         </div>
       </div>
 
-      {/* Scroll hint */}
-      <div
-        ref={scrollHintRef}
-        style={{
-          position: "absolute",
-          bottom: "40px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "8px",
-        }}
-      >
-        <span style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: "11px",
-          letterSpacing: "0.15em",
-          color: "var(--cream-muted)",
-          textTransform: "uppercase",
-          opacity: 0.6,
-        }}>Scroll</span>
-        <div style={{
-          width: "1px",
-          height: "48px",
-          background: "linear-gradient(to bottom, var(--gold), transparent)",
-        }} />
+      {/* Scroll indicator */}
+      <div ref={scrollRef} style={{
+        position: "absolute", bottom: "36px", left: "50%", transform: "translateX(-50%)",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+      }}>
+        <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.18em", color: "var(--sage-deep)", textTransform: "uppercase", opacity: 0.7 }}>Scroll</span>
+        <div style={{ width: "1px", height: "44px", background: "linear-gradient(to bottom, var(--charcoal), transparent)" }} />
       </div>
     </section>
   );

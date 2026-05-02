@@ -1,36 +1,30 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
 
-const inquiryTypes = ["General", "Creative Direction", "Curation", "Collaboration", "Speaking", "Media"];
+const INQUIRY_TYPES = ["General", "Creative Direction", "Curation", "Collaboration", "Speaking", "Media"];
 
 export default function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const emailRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
-  const [inquiry, setInquiry] = useState("General");
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const emailRef    = useRef<HTMLAnchorElement>(null);
+  const formRef     = useRef<HTMLDivElement>(null);
+  const [inquiry, setInquiry]   = useState("General");
+  const [form, setForm]         = useState({ name: "", email: "", message: "" });
+  const [sent, setSent]         = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(emailRef.current,
-        { y: 60, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 1, ease: "power3.out",
-          scrollTrigger: { trigger: emailRef.current, start: "top 80%" }
-        }
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out",
+          scrollTrigger: { trigger: emailRef.current, start: "top 82%" } }
       );
       gsap.fromTo(formRef.current,
-        { y: 40, opacity: 0 },
-        {
-          y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
-          scrollTrigger: { trigger: formRef.current, start: "top 85%" }
-        }
+        { y: 36, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
+          scrollTrigger: { trigger: formRef.current, start: "top 85%" } }
       );
     }, sectionRef);
     return () => ctx.revert();
@@ -46,81 +40,71 @@ export default function Contact() {
       id="contact"
       ref={sectionRef}
       style={{
-        padding: "clamp(80px, 12vw, 160px) clamp(24px, 6vw, 80px) clamp(60px, 8vw, 100px)",
-        background: "var(--bg-light)",
+        background: "var(--off-white)",
         position: "relative",
+        padding: "clamp(80px,12vw,160px) var(--container-pad) clamp(56px,8vw,96px)",
         overflow: "hidden",
       }}
     >
-      {/* Dark geometric accent */}
+      {/* Pinstripe on contact too */}
       <div style={{
-        position: "absolute",
-        top: 0, left: 0, right: 0,
-        height: "4px",
-        background: "linear-gradient(90deg, var(--terracotta), var(--gold), var(--forest))",
+        position: "absolute", inset: 0,
+        background: "repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(0,0,0,0.03) 38px, rgba(0,0,0,0.03) 39px)",
+        pointerEvents: "none",
       }} />
 
-      <div style={{ maxWidth: "var(--container-max)", margin: "0 auto" }}>
+      {/* Top colour bar — terracotta → gold → sage */}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: "4px",
+        background: "linear-gradient(90deg, var(--terracotta), var(--gold), var(--sage-deep))",
+      }} />
 
-        {/* Email headline */}
-        <div ref={emailRef} style={{ marginBottom: "clamp(48px, 7vw, 80px)" }}>
-          <a
-            href="mailto:hello@onahiijeh.com"
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(28px, 5.5vw, 80px)",
-              lineHeight: 1,
-              letterSpacing: "-0.02em",
-              color: "var(--bg-dark)",
-              textDecoration: "none",
-              display: "block",
-              transition: "color 0.3s ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--terracotta)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--bg-dark)")}
-          >
-            hello@onahiijeh.com
-          </a>
-        </div>
+      <div className="wrap">
+        {/* Big email address */}
+        <a
+          ref={emailRef}
+          href="mailto:hello@onahiijeh.com"
+          style={{
+            display: "block",
+            fontFamily: "var(--font-serif)", fontWeight: 300,
+            fontSize: "clamp(26px,5vw,76px)",
+            lineHeight: 1.05, letterSpacing: "-0.02em",
+            color: "var(--charcoal)", textDecoration: "none",
+            marginBottom: "clamp(40px,6vw,72px)",
+            transition: "color 0.3s ease",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = "var(--terracotta)")}
+          onMouseLeave={e => (e.currentTarget.style.color = "var(--charcoal)")}
+        >
+          hello@onahiijeh.com
+        </a>
 
         {/* Form */}
         <div ref={formRef}>
           {sent ? (
-            <div style={{
-              fontFamily: "var(--font-serif)",
-              fontStyle: "italic",
-              fontSize: "clamp(24px, 3vw, 40px)",
-              color: "var(--bg-dark)",
-              textAlign: "center",
-              padding: "60px 0",
+            <p style={{
+              fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 300,
+              fontSize: "clamp(22px,2.8vw,36px)", color: "var(--charcoal)",
+              textAlign: "center", padding: "56px 0",
             }}>
               Thank you — I&apos;ll be in touch shortly.
-            </div>
+            </p>
           ) : (
             <>
               {/* Inquiry type pills */}
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                marginBottom: "clamp(28px, 4vw, 48px)",
-              }}>
-                {inquiryTypes.map((type) => (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "clamp(24px,3.5vw,44px)" }}>
+                {INQUIRY_TYPES.map(type => (
                   <button
                     key={type}
                     onClick={() => setInquiry(type)}
                     style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "13px",
-                      letterSpacing: "0.04em",
-                      padding: "8px 18px",
-                      borderRadius: "100px",
-                      border: "1px solid",
-                      borderColor: inquiry === type ? "var(--bg-dark)" : "rgba(10,9,7,0.2)",
-                      background: inquiry === type ? "var(--bg-dark)" : "transparent",
-                      color: inquiry === type ? "var(--cream)" : "var(--bg-dark)",
-                      cursor: "pointer",
-                      transition: "all 0.25s ease",
+                      fontFamily: "var(--font-sans)", fontSize: "12px",
+                      letterSpacing: "0.04em", padding: "7px 16px",
+                      borderRadius: "100px", border: "1px solid",
+                      borderColor: inquiry === type ? "var(--charcoal)" : "rgba(28,28,26,0.18)",
+                      background: inquiry === type ? "var(--charcoal)" : "transparent",
+                      color: inquiry === type ? "var(--off-white)" : "var(--charcoal)",
+                      cursor: "pointer", transition: "all 0.22s ease",
                     }}
                   >
                     {type}
@@ -128,83 +112,55 @@ export default function Contact() {
                 ))}
               </div>
 
-              {/* Fields */}
+              {/* Name + email row */}
               <div style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "clamp(16px, 3vw, 32px)",
-                marginBottom: "clamp(16px, 2vw, 24px)",
-              }} className="form-grid">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="form-input"
-                    style={{ color: "var(--bg-dark)", borderColor: "rgba(10,9,7,0.2)" }}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="form-input"
-                    style={{ color: "var(--bg-dark)", borderColor: "rgba(10,9,7,0.2)" }}
-                  />
-                </div>
+                display: "grid", gridTemplateColumns: "1fr 1fr",
+                gap: "clamp(14px,2.5vw,28px)",
+                marginBottom: "clamp(12px,1.5vw,18px)",
+              }} className="form-row">
+                <input
+                  type="text" placeholder="Your name"
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  className="field"
+                />
+                <input
+                  type="email" placeholder="Your email"
+                  value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  className="field"
+                />
               </div>
 
+              {/* Message + submit */}
               <div style={{
-                display: "flex",
-                alignItems: "flex-end",
-                gap: "16px",
-                borderBottom: "1px solid rgba(10,9,7,0.2)",
-                paddingBottom: "14px",
-                marginBottom: "clamp(32px, 4vw, 48px)",
+                display: "flex", alignItems: "flex-end", gap: "14px",
+                borderBottom: "1px solid rgba(28,28,26,0.18)",
+                paddingBottom: "13px", marginBottom: "clamp(28px,4vw,44px)",
               }}>
                 <input
-                  type="text"
-                  placeholder="How may I help you?"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  type="text" placeholder="How may I help you?"
+                  value={form.message}
+                  onChange={e => setForm({ ...form, message: e.target.value })}
                   style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "var(--bg-dark)",
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "15px",
-                    fontWeight: 300,
-                    flex: 1,
-                    outline: "none",
-                    padding: "0",
+                    background: "transparent", border: "none",
+                    fontFamily: "var(--font-sans)", fontSize: "14px", fontWeight: 300,
+                    color: "var(--charcoal)", flex: 1, outline: "none", padding: "0",
                   }}
                 />
                 <button
                   onClick={handleSubmit}
                   style={{
-                    width: 44, height: 44, borderRadius: "50%",
-                    background: "var(--bg-dark)",
-                    border: "none",
-                    color: "var(--cream)",
-                    fontSize: "18px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    transition: "background 0.3s ease, transform 0.2s ease",
+                    width: 42, height: 42, borderRadius: "50%",
+                    background: "var(--charcoal)", border: "none",
+                    color: "var(--off-white)", fontSize: "16px",
+                    cursor: "pointer", flexShrink: 0,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    transition: "background 0.25s ease, transform 0.2s ease",
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "var(--terracotta)";
-                    (e.currentTarget as HTMLElement).style.transform = "scale(1.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "var(--bg-dark)";
-                    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--terracotta)"; (e.currentTarget as HTMLElement).style.transform = "scale(1.08)"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "var(--charcoal)"; (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+                  aria-label="Send"
                 >
                   →
                 </button>
@@ -212,82 +168,61 @@ export default function Contact() {
             </>
           )}
 
-          {/* Social links + footer */}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}>
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              {["Instagram ↗", "Twitter/X ↗", "LinkedIn ↗"].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "13px",
-                    color: "var(--bg-dark)",
-                    textDecoration: "none",
-                    padding: "8px 16px",
-                    borderRadius: "100px",
-                    border: "1px solid rgba(10,9,7,0.25)",
-                    transition: "all 0.25s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "var(--bg-dark)";
-                    (e.currentTarget as HTMLElement).style.color = "var(--cream)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = "var(--bg-dark)";
-                  }}
-                >
-                  {s}
-                </a>
-              ))}
-            </div>
+          {/* Socials */}
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            {[
+              { label: "Instagram ↗", url: "https://www.instagram.com/onahiijeh" },
+              { label: "Twitter/X ↗",  url: "https://x.com/shee_nahi" },
+              { label: "TikTok ↗",    url: "https://www.tiktok.com/@not.ur.nans" },
+              { label: "Afronated ↗", url: "https://afronated.com" },
+            ].map(s => (
+              <a
+                key={s.label}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: "var(--font-sans)", fontSize: "12px",
+                  color: "var(--charcoal)", textDecoration: "none",
+                  padding: "7px 15px", borderRadius: "100px",
+                  border: "1px solid rgba(28,28,26,0.2)",
+                  transition: "all 0.22s ease",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--charcoal)"; (e.currentTarget as HTMLElement).style.color = "var(--off-white)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--charcoal)"; }}
+              >
+                {s.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div style={{
-        marginTop: "clamp(60px, 8vw, 100px)",
-        paddingTop: "24px",
-        borderTop: "1px solid rgba(10,9,7,0.15)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "12px",
-      }}>
-        <span style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: "12px",
-          color: "rgba(10,9,7,0.4)",
-          letterSpacing: "0.04em",
+      <div className="wrap" style={{ marginTop: "clamp(56px,8vw,96px)" }}>
+        <div style={{
+          borderTop: "1px solid rgba(28,28,26,0.12)",
+          paddingTop: "22px",
+          display: "flex", justifyContent: "space-between",
+          alignItems: "center", flexWrap: "wrap", gap: "10px",
         }}>
-          Made with intention. © {new Date().getFullYear()} Onahi Ijeh
-        </span>
-        <span style={{
-          fontFamily: "var(--font-serif)",
-          fontStyle: "italic",
-          fontSize: "13px",
-          color: "rgba(10,9,7,0.35)",
-        }}>
-          Afronated
-        </span>
+          <span style={{
+            fontFamily: "var(--font-sans)", fontSize: "11px",
+            color: "rgba(28,28,26,0.35)", letterSpacing: "0.04em",
+          }}>
+            Made with intention. © {new Date().getFullYear()} Onahi Ijeh
+          </span>
+          <span style={{
+            fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "12px",
+            color: "rgba(28,28,26,0.3)",
+          }}>
+            Afronated
+          </span>
+        </div>
       </div>
 
       <style jsx>{`
-        @media (max-width: 768px) {
-          .form-grid { grid-template-columns: 1fr !important; }
-        }
-        .form-input { color: var(--bg-dark) !important; }
-        .form-input::placeholder { color: rgba(10,9,7,0.35) !important; }
-        .form-input:focus { border-color: var(--terracotta) !important; }
+        @media (max-width: 768px) { .form-row { grid-template-columns: 1fr !important; } }
       `}</style>
     </section>
   );

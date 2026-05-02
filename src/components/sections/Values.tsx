@@ -1,164 +1,139 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
 
-const values = [
-  { icon: "◎", title: "Culture is the foundation", description: "Everything starts from culture — it shapes how we see, what we build, and who we build it for." },
-  { icon: "◈", title: "Storytelling is a superpower", description: "The right story told with intention can change minds, shift culture, and open doors." },
-  { icon: "◉", title: "Community over competition", description: "African creativity thrives when we amplify each other. There's room for all of us at the top." },
-  { icon: "◇", title: "Excellence in every detail", description: "From concept to execution — if it carries my name, it has to be done with full intention." },
+const VALUES = [
+  { icon: "◎", title: "Culture is the foundation",       desc: "Everything starts from culture — it shapes how we see, what we build, and who we build it for." },
+  { icon: "◈", title: "Storytelling is a superpower",    desc: "The right story told with intention can change minds, shift culture, and open doors." },
+  { icon: "◉", title: "Community over competition",      desc: "African creativity thrives when we amplify each other. There's room for all of us at the top." },
+  { icon: "◇", title: "Excellence in every detail",      desc: "From concept to execution — if it carries my name, it has to be done with full intention." },
 ];
+
+const QUOTE = `"For me, creativity is about amplifying what already exists — the culture, the people, the stories. My job is to make it undeniable."`;
 
 export default function Values() {
   const sectionRef = useRef<HTMLElement>(null);
-  const quoteRef = useRef<HTMLDivElement>(null);
+  const quoteRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Quote reveal - word by word
-      const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".word");
+      const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
       if (words) {
         gsap.fromTo(words,
-          { y: 20, opacity: 0 },
-          {
-            y: 0, opacity: 1, duration: 0.6, ease: "power2.out",
-            stagger: 0.04,
-            scrollTrigger: { trigger: quoteRef.current, start: "top 80%" }
-          }
+          { y: 18, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.65, ease: "power2.out", stagger: 0.035,
+            scrollTrigger: { trigger: quoteRef.current, start: "top 82%" } }
         );
       }
-
-      gsap.utils.toArray<HTMLElement>(".value-card-item").forEach((el, i) => {
+      gsap.utils.toArray<HTMLElement>(".val-reveal").forEach((el, i) => {
         gsap.fromTo(el,
-          { y: 40, opacity: 0 },
-          {
-            y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
-            delay: i * 0.12,
-            scrollTrigger: { trigger: el, start: "top 90%" }
-          }
+          { y: 36, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.1,
+            scrollTrigger: { trigger: el, start: "top 90%" } }
         );
       });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
-
-  const quoteText = `"For me, creativity is about amplifying what already exists — the culture, the people, the stories. My job is to make it undeniable."`;
 
   return (
     <section
       id="values"
       ref={sectionRef}
+      className="pinstripe"
       style={{
-        padding: "clamp(80px, 12vw, 160px) clamp(24px, 6vw, 80px)",
-        background: "var(--bg-warm)",
+        background: "var(--cream-warm)",
         position: "relative",
+        padding: "clamp(80px,12vw,160px) var(--container-pad)",
         overflow: "hidden",
       }}
     >
-      <div style={{ maxWidth: "var(--container-max)", margin: "0 auto" }}>
+      {/* Decorative large faint circle */}
+      <div aria-hidden style={{
+        position: "absolute", left: "-8%", bottom: "-15%",
+        width: "clamp(280px,40vw,560px)", height: "clamp(280px,40vw,560px)",
+        borderRadius: "50%",
+        border: "1px solid rgba(107,117,96,0.18)",
+        pointerEvents: "none",
+      }} />
 
-        {/* Header */}
+      <div className="wrap">
+        {/* Header row */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "auto 1fr",
-          gap: "clamp(40px, 8vw, 100px)",
+          gap: "clamp(32px,6vw,80px)",
           alignItems: "start",
-          marginBottom: "clamp(60px, 8vw, 100px)",
-        }} className="values-header-grid">
-          <div>
+          marginBottom: "clamp(56px,8vw,96px)",
+        }} className="val-header">
+          <div className="val-reveal">
             <span style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "12px",
-              letterSpacing: "0.2em",
-              color: "var(--gold)",
-              textTransform: "uppercase",
               display: "block",
-              marginBottom: "16px",
-            }}>
-              I follow and believe in
-            </span>
+              fontFamily: "var(--font-sans)", fontSize: "11px",
+              letterSpacing: "0.2em", textTransform: "uppercase",
+              color: "var(--sage-deep)", marginBottom: "14px", fontWeight: 300,
+            }}>I follow and believe in</span>
             <h2 style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(40px, 6vw, 80px)",
-              lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              color: "var(--cream)",
-              whiteSpace: "nowrap",
+              fontFamily: "var(--font-serif)", fontWeight: 300,
+              fontSize: "clamp(40px,5.5vw,76px)",
+              lineHeight: 0.95, letterSpacing: "-0.02em",
+              color: "var(--charcoal)", whiteSpace: "nowrap",
             }}>
-              Key <span style={{ fontStyle: "italic" }}>Principles</span>
+              Key <em style={{ fontStyle: "italic" }}>Principles</em>
             </h2>
           </div>
 
-          {/* Quote */}
-          <div
-            ref={quoteRef}
-            style={{
-              paddingTop: "clamp(12px, 2vw, 24px)",
-              maxWidth: "540px",
-            }}
-          >
-            <div style={{
-              fontFamily: "var(--font-serif)",
-              fontStyle: "italic",
-              fontSize: "clamp(16px, 1.8vw, 22px)",
-              color: "var(--cream-muted)",
-              lineHeight: 1.6,
+          {/* Quote — word-by-word reveal */}
+          <div ref={quoteRef} style={{ paddingTop: "clamp(10px,1.5vw,20px)", maxWidth: "520px" }}>
+            <p style={{
+              fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 300,
+              fontSize: "clamp(15px,1.7vw,21px)",
+              lineHeight: 1.6, color: "var(--charcoal-soft)",
             }}>
-              {quoteText.split(" ").map((word, i) => (
-                <span key={i} className="word" style={{ display: "inline-block", marginRight: "0.3em" }}>
+              {QUOTE.split(" ").map((word, i) => (
+                <span key={i} className="w" style={{ display: "inline-block", marginRight: "0.3em" }}>
                   {word}
                 </span>
               ))}
-            </div>
+            </p>
           </div>
         </div>
 
-        {/* Value cards */}
+        {/* Value cards 2×2 */}
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "clamp(12px, 2vw, 20px)",
-        }} className="values-cards-grid">
-          {values.map((v, i) => (
-            <div key={i} className="value-card value-card-item" style={{ alignItems: "flex-start" }}>
+          gridTemplateColumns: "repeat(2,1fr)",
+          gap: "clamp(10px,1.6vw,18px)",
+        }} className="val-cards">
+          {VALUES.map((v, i) => (
+            <div key={i} className="val-card val-reveal" style={{ alignItems: "flex-start" }}>
               <div style={{
-                width: 44, height: 44, borderRadius: "50%",
-                background: i % 3 === 0
-                  ? "rgba(200,134,42,0.18)"
-                  : i % 3 === 1
-                    ? "rgba(181,82,46,0.18)"
-                    : "rgba(45,74,53,0.25)",
+                width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
+                background: i % 3 === 0 ? "rgba(107,117,96,0.18)"
+                          : i % 3 === 1 ? "rgba(155,95,68,0.14)"
+                          : "rgba(138,115,85,0.16)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-                fontSize: "18px",
-                color: i % 3 === 0 ? "var(--gold)" : i % 3 === 1 ? "var(--terracotta)" : "var(--forest-light)",
+                fontSize: "17px",
+                color: i % 3 === 0 ? "var(--sage-deep)"
+                     : i % 3 === 1 ? "var(--terracotta)"
+                     : "var(--gold)",
               }}>
                 {v.icon}
               </div>
               <div>
                 <div style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "clamp(14px, 1.3vw, 16px)",
-                  fontWeight: 500,
-                  color: "var(--cream)",
-                  marginBottom: "8px",
+                  fontFamily: "var(--font-sans)", fontSize: "clamp(13px,1.2vw,15px)",
+                  fontWeight: 400, color: "var(--charcoal)", marginBottom: "6px",
                 }}>
                   {v.title}
                 </div>
                 <div style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "clamp(13px, 1.1vw, 14px)",
-                  fontWeight: 300,
-                  color: "var(--cream-muted)",
-                  lineHeight: 1.6,
-                  opacity: 0.8,
+                  fontFamily: "var(--font-sans)", fontSize: "clamp(12px,1.1vw,14px)",
+                  fontWeight: 300, color: "var(--charcoal-soft)", lineHeight: 1.6, opacity: 0.85,
                 }}>
-                  {v.description}
+                  {v.desc}
                 </div>
               </div>
             </div>
@@ -168,8 +143,8 @@ export default function Values() {
 
       <style jsx>{`
         @media (max-width: 768px) {
-          .values-header-grid { grid-template-columns: 1fr !important; }
-          .values-cards-grid { grid-template-columns: 1fr !important; }
+          .val-header { grid-template-columns: 1fr !important; }
+          .val-cards  { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>

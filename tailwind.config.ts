@@ -9,17 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "bg-dark": "#0A0907",
-        "bg-warm": "#1A1612",
-        "bg-light": "#F0EBE1",
-        gold: "#C8862A",
-        terracotta: "#B5522E",
-        forest: "#2D4A35",
-        cream: "#F0EBE1",
+        sage:        "#B8BFA8",
+        "sage-dark": "#9DA894",
+        "sage-deep": "#6B7560",
+        cream:       "#F2EDE4",
+        charcoal:    "#1C1C1A",
+        gold:        "#8A7355",
+        terracotta:  "#9B5F44",
+        rose:        "#C4957A",
       },
       fontFamily: {
-        serif: ["DM Serif Display", "Georgia", "serif"],
-        sans: ["DM Sans", "system-ui", "sans-serif"],
+        serif: ["Cormorant Garamond", "Georgia", "serif"],
+        sans:  ["Jost", "system-ui", "sans-serif"],
       },
     },
   },
