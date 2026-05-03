@@ -17,14 +17,11 @@ export default function Afronated() {
             scrollTrigger: { trigger: el, start: "top 84%" } }
         );
       });
-
-      // Photo floats in from left
       gsap.fromTo(photoRef.current,
         { x: -50, rotate: -8, opacity: 0 },
         { x: 0, rotate: -5, opacity: 1, duration: 1.2, ease: "power3.out",
           scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
       );
-      // Gentle sway
       gsap.to(photoRef.current, {
         rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
@@ -44,6 +41,12 @@ export default function Afronated() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .afrn-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {/* Large faint watermark text */}
       <div aria-hidden style={{
         position: "absolute", right: "-2%", bottom: "-4%",
@@ -54,7 +57,7 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/* Floating diary photo — top left, outside main grid */}
+      {/* Floating diary photo — top left */}
       <div
         ref={photoRef}
         style={{
@@ -87,13 +90,15 @@ export default function Afronated() {
       </div>
 
       <div className="wrap">
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "clamp(40px, 8vw, 96px)",
-          alignItems: "center",
-        }} className="afrn-grid">
-
+        <div
+          className="afrn-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(40px, 8vw, 96px)",
+            alignItems: "center",
+          }}
+        >
           {/* Left */}
           <div>
             <span className="afrn-reveal" style={{
@@ -157,7 +162,6 @@ export default function Afronated() {
                 </text>
               </svg>
 
-              {/* Photo placeholder in centre of ring */}
               <div style={{
                 width: "58%", height: "58%", borderRadius: "50%",
                 background: "linear-gradient(135deg, var(--cream-warm), var(--sage))",
@@ -204,12 +208,6 @@ export default function Afronated() {
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .afrn-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }

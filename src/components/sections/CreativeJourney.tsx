@@ -5,22 +5,22 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SKILLS = [
-  { category: "Creative",   items: ["Brand Identity", "Creative Direction", "Art Direction", "Mood Boarding", "Storyboarding", "Visual Curation"] },
-  { category: "Media",      items: ["Content Strategy", "Copywriting", "Editorial", "Social Media", "Campaign Planning", "Photography Direction"] },
-  { category: "Tools",      items: ["Canva Pro", "Adobe Suite", "Notion", "Figma (Basic)", "CapCut", "Lightroom"] },
+  { category: "Creative",    items: ["Brand Identity", "Creative Direction", "Art Direction", "Mood Boarding", "Storyboarding", "Visual Curation"] },
+  { category: "Media",       items: ["Content Strategy", "Copywriting", "Editorial", "Social Media", "Campaign Planning", "Photography Direction"] },
+  { category: "Tools",       items: ["Canva Pro", "Adobe Suite", "Notion", "Figma (Basic)", "CapCut", "Lightroom"] },
   { category: "Soft Skills", items: ["Community Building", "Networking", "Pitching", "Collaboration", "Trend Forecasting", "Cultural Curation"] },
 ];
 
 const HIGHLIGHTS = [
-  { year: "2021 – Now", title: "Founder, Afronated",       desc: "Built a creative media collective from zero — growing a community, producing original content, and running a full editorial operation." },
-  { year: "2023",       title: "Creative Direction Lead",   desc: "Led creative output for campaigns reaching thousands across West Africa and the diaspora, developing brand voice and visual language." },
-  { year: "2024",       title: "Cultural Curation",         desc: "Curated a spotlight series on emerging African artists, handling end-to-end production from ideation to publication." },
-  { year: "Ongoing",    title: "Open to Opportunities",     desc: "Available for creative direction, brand consulting, curation roles, and media collaborations. Let's build something meaningful." },
+  { year: "2021 – Now", title: "Founder, Afronated",     desc: "Built a creative media collective from zero — growing a community, producing original content, and running a full editorial operation." },
+  { year: "2023",       title: "Creative Direction Lead", desc: "Led creative output for campaigns reaching thousands across West Africa and the diaspora, developing brand voice and visual language." },
+  { year: "2024",       title: "Cultural Curation",       desc: "Curated a spotlight series on emerging African artists, handling end-to-end production from ideation to publication." },
+  { year: "Ongoing",    title: "Open to Opportunities",   desc: "Available for creative direction, brand consulting, curation roles, and media collaborations. Let's build something meaningful." },
 ];
 
 export default function CreativeJourney() {
-  const sectionRef   = useRef<HTMLElement>(null);
-  const photoRef     = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -31,8 +31,6 @@ export default function CreativeJourney() {
             scrollTrigger: { trigger: el, start: "top 90%" } }
         );
       });
-
-      // Diary photo floats in from right
       gsap.fromTo(photoRef.current,
         { x: 60, rotate: 7, opacity: 0 },
         { x: 0, rotate: 5, opacity: 1, duration: 1.2, ease: "power3.out",
@@ -90,7 +88,6 @@ export default function CreativeJourney() {
       </div>
 
       <div className="wrap">
-
         {/* Section header */}
         <div className="journey-reveal" style={{ marginBottom: "clamp(48px,7vw,88px)" }}>
           <span style={{
@@ -110,9 +107,7 @@ export default function CreativeJourney() {
         </div>
 
         {/* Timeline highlights */}
-        <div style={{
-          marginBottom: "clamp(56px,8vw,96px)",
-        }}>
+        <div style={{ marginBottom: "clamp(56px,8vw,96px)" }}>
           {HIGHLIGHTS.map((h, i) => (
             <div
               key={i}

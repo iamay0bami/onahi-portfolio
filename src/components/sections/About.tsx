@@ -10,7 +10,7 @@ export default function About() {
   const bioRef     = useRef<HTMLDivElement>(null);
   const img1Ref    = useRef<HTMLDivElement>(null);
   const img2Ref    = useRef<HTMLDivElement>(null);
-  const img3Ref    = useRef<HTMLDivElement>(null); // new 3rd photo — polaroid floating
+  const img3Ref    = useRef<HTMLDivElement>(null);
   const circleRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,8 +45,6 @@ export default function About() {
         { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
           scrollTrigger: { trigger: circleRef.current, start: "top 85%" } }
       );
-
-      // Gentle float on the 3rd photo
       gsap.to(img3Ref.current, {
         y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
       });
@@ -66,20 +64,24 @@ export default function About() {
         overflow: "hidden",
       }}
     >
-      {/* The bowl2 for the floating ball to land in is rendered here by FloatingBall component — 
-          it's absolutely positioned relative to the hero. The bowl in this section is purely decorative. */}
+      <style>{`
+        @media (max-width: 768px) {
+          .about-top { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
 
       <div className="wrap">
-
         {/* TOP — headline + bio */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "clamp(36px, 8vw, 96px)",
-          alignItems: "start",
-          marginBottom: "clamp(64px, 10vw, 120px)",
-        }} className="about-top">
-
+        <div
+          className="about-top"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(36px, 8vw, 96px)",
+            alignItems: "start",
+            marginBottom: "clamp(64px, 10vw, 120px)",
+          }}
+        >
           <div ref={hlRef}>
             <h2 style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
@@ -132,7 +134,6 @@ export default function About() {
           flexWrap: "wrap",
           position: "relative",
         }}>
-
           {/* Green soft circle behind the photos */}
           <div ref={circleRef} style={{
             position: "absolute",
@@ -145,7 +146,7 @@ export default function About() {
             zIndex: 0,
           }} aria-hidden="true" />
 
-          {/* Photo 3 — small polaroid, floats above the group, top-left */}
+          {/* Photo 3 — small polaroid floating */}
           <div ref={img3Ref} style={{
             position: "absolute",
             top: "-50px",
@@ -165,7 +166,6 @@ export default function About() {
               }}>
                 <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "18px", color: "rgba(28,28,26,0.25)" }}>✦</span>
               </div>
-              {/* Polaroid white strip at bottom */}
               <div style={{
                 height: "20%", background: "rgba(255,255,255,0.7)",
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -239,12 +239,6 @@ export default function About() {
           </text>
         </svg>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .about-top { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }

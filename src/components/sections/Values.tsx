@@ -35,8 +35,6 @@ export default function Values() {
             scrollTrigger: { trigger: el, start: "top 90%" } }
         );
       });
-
-      // Diary photo slides in with tilt
       gsap.fromTo(photoRef.current,
         { x: -40, rotate: -10, opacity: 0 },
         { x: 0, rotate: -7, opacity: 1, duration: 1.1, ease: "power3.out",
@@ -61,6 +59,13 @@ export default function Values() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .val-header { grid-template-columns: 1fr !important; }
+          .val-cards  { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {/* Decorative large faint circle */}
       <div aria-hidden style={{
         position: "absolute", left: "-8%", bottom: "-15%",
@@ -70,7 +75,7 @@ export default function Values() {
         pointerEvents: "none",
       }} />
 
-      {/* Diary photo — bottom right, peeking */}
+      {/* Diary photo — bottom left */}
       <div
         ref={photoRef}
         style={{
@@ -104,13 +109,16 @@ export default function Values() {
 
       <div className="wrap">
         {/* Header row */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "auto 1fr",
-          gap: "clamp(32px,6vw,80px)",
-          alignItems: "start",
-          marginBottom: "clamp(56px,8vw,96px)",
-        }} className="val-header">
+        <div
+          className="val-header"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "auto 1fr",
+            gap: "clamp(32px,6vw,80px)",
+            alignItems: "start",
+            marginBottom: "clamp(56px,8vw,96px)",
+          }}
+        >
           <div className="val-reveal">
             <span style={{
               display: "block",
@@ -145,11 +153,14 @@ export default function Values() {
         </div>
 
         {/* Value cards 2×2 */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2,1fr)",
-          gap: "clamp(10px,1.6vw,18px)",
-        }} className="val-cards">
+        <div
+          className="val-cards"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2,1fr)",
+            gap: "clamp(10px,1.6vw,18px)",
+          }}
+        >
           {VALUES.map((v, i) => (
             <div key={i} className="val-card val-reveal" style={{ alignItems: "flex-start" }}>
               <div style={{
@@ -183,13 +194,6 @@ export default function Values() {
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .val-header { grid-template-columns: 1fr !important; }
-          .val-cards  { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </section>
   );
 }

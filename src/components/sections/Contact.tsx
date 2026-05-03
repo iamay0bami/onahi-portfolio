@@ -46,6 +46,12 @@ export default function Contact() {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .form-row { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
       {/* Pinstripe */}
       <div style={{
         position: "absolute", inset: 0,
@@ -114,11 +120,14 @@ export default function Contact() {
               </div>
 
               {/* Name + email row */}
-              <div style={{
-                display: "grid", gridTemplateColumns: "1fr 1fr",
-                gap: "clamp(14px,2.5vw,28px)",
-                marginBottom: "clamp(12px,1.5vw,18px)",
-              }} className="form-row">
+              <div
+                className="form-row"
+                style={{
+                  display: "grid", gridTemplateColumns: "1fr 1fr",
+                  gap: "clamp(14px,2.5vw,28px)",
+                  marginBottom: "clamp(12px,1.5vw,18px)",
+                }}
+              >
                 <input
                   type="text" placeholder="Your name"
                   value={form.name}
@@ -175,7 +184,7 @@ export default function Contact() {
             </>
           )}
 
-          {/* Socials — correct handles */}
+          {/* Socials */}
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             {[
               { label: "Instagram ↗", url: "https://www.instagram.com/onahiijeh" },
@@ -233,10 +242,6 @@ export default function Contact() {
           </span>
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) { .form-row { grid-template-columns: 1fr !important; } }
-      `}</style>
     </section>
   );
 }

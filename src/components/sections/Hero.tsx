@@ -29,7 +29,6 @@ export default function Hero() {
         { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" },
         "-=0.45"
       )
-      // Photo slides in from right
       .fromTo(photoRef.current,
         { x: 60, opacity: 0, rotate: 4 },
         { x: 0, opacity: 1, rotate: 3, duration: 1.1, ease: "power3.out" },
@@ -41,12 +40,10 @@ export default function Hero() {
         "-=0.3"
       );
 
-      // Scroll hint bob
       gsap.to(scrollRef.current, {
         y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1,
       });
 
-      // Subtle photo float
       gsap.to(photoRef.current, {
         y: -8, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
@@ -96,7 +93,13 @@ export default function Hero() {
         gridTemplateColumns: "1fr auto",
         gap: "clamp(24px, 4vw, 56px)",
         alignItems: "center",
-      }} className="hero-grid">
+      }}>
+        <style>{`
+          @media (max-width: 768px) {
+            .hero-grid-inner { grid-template-columns: 1fr !important; }
+            .hero-photo-wrap { display: none !important; }
+          }
+        `}</style>
 
         {/* LEFT — Name + quote */}
         <div>
@@ -140,26 +143,20 @@ export default function Hero() {
         <div
           ref={photoRef}
           className="hero-photo-wrap"
-          style={{
-            flexShrink: 0,
-            transform: "rotate(3deg)",
-          }}
+          style={{ flexShrink: 0, transform: "rotate(3deg)" }}
         >
-          {/* Diary-style photo frame */}
           <div className="photo-frame" style={{
             width: "clamp(140px, 18vw, 240px)",
             height: "clamp(190px, 24vw, 320px)",
             borderRadius: "3px",
             position: "relative",
           }}>
-            {/* Placeholder — replace the div below with <img src="..." /> */}
             <div style={{
               width: "100%", height: "100%",
               background: "linear-gradient(165deg, #c9c5b8 0%, #b5b2a3 50%, #a8a496 100%)",
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: "10px",
             }}>
-              {/* Silhouette icon */}
               <svg width="44" height="54" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.3 }}>
                 <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.6)" />
                 <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.6)" strokeWidth="1.5" fill="none" />
@@ -170,8 +167,6 @@ export default function Hero() {
                 color: "rgba(28,28,26,0.3)",
               }}>Headshot</span>
             </div>
-
-            {/* Small sticker-like label */}
             <div style={{
               position: "absolute", bottom: -10, left: "50%",
               transform: "translateX(-50%) rotate(-2deg)",
@@ -186,7 +181,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* FloatingBall + Bowl — rendered inside Hero so bowl is positioned relative to hero */}
       <FloatingBall />
 
       {/* Scroll indicator */}
@@ -206,17 +200,6 @@ export default function Hero() {
           background: "linear-gradient(to bottom, var(--charcoal), transparent)",
         }} />
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .hero-photo-wrap {
-            display: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

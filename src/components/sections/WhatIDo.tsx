@@ -5,11 +5,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES = [
-  { label: "Creative Direction",  desc: "End-to-end creative leadership — from concept through execution across campaigns, brands, and media." },
-  { label: "Curation",           desc: "Selecting, shaping, and presenting stories and art that resonate. Culture-led, community-driven." },
-  { label: "Media & Storytelling", desc: "Producing editorial content, spotlights, and narratives that amplify African voices." },
-  { label: "Brand Consulting",   desc: "Helping brands discover their cultural identity and communicate it with clarity and intention." },
-  { label: "Workshops",          desc: "Interactive creative sessions for teams, students, and collectives ready to think differently." },
+  { label: "Creative Direction",    desc: "End-to-end creative leadership — from concept through execution across campaigns, brands, and media." },
+  { label: "Curation",              desc: "Selecting, shaping, and presenting stories and art that resonate. Culture-led, community-driven." },
+  { label: "Media & Storytelling",  desc: "Producing editorial content, spotlights, and narratives that amplify African voices." },
+  { label: "Brand Consulting",      desc: "Helping brands discover their cultural identity and communicate it with clarity and intention." },
+  { label: "Workshops",             desc: "Interactive creative sessions for teams, students, and collectives ready to think differently." },
 ];
 
 export default function WhatIDo() {
@@ -40,7 +40,13 @@ export default function WhatIDo() {
         overflow: "hidden",
       }}
     >
-      {/* Big curved text arc like the reference's "Let's see how I may help you" section */}
+      <style>{`
+        @media (max-width: 768px) {
+          .what-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      {/* Big curved arc shape */}
       <div aria-hidden style={{
         position: "absolute",
         top: "50%", left: "50%",
@@ -53,13 +59,15 @@ export default function WhatIDo() {
       }} />
 
       <div className="wrap">
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "clamp(40px,8vw,96px)",
-          alignItems: "start",
-        }} className="what-grid">
-
+        <div
+          className="what-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "clamp(40px,8vw,96px)",
+            alignItems: "start",
+          }}
+        >
           {/* Left — big heading */}
           <div className="what-row">
             <p style={{
@@ -113,10 +121,6 @@ export default function WhatIDo() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 768px) { .what-grid { grid-template-columns: 1fr !important; } }
-      `}</style>
     </section>
   );
 }
