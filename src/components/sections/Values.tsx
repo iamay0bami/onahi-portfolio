@@ -16,6 +16,7 @@ const QUOTE = `"For me, creativity is about amplifying what already exists — t
 export default function Values() {
   const sectionRef = useRef<HTMLElement>(null);
   const quoteRef   = useRef<HTMLDivElement>(null);
+  const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -33,6 +34,16 @@ export default function Values() {
           { y: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.1,
             scrollTrigger: { trigger: el, start: "top 90%" } }
         );
+      });
+
+      // Diary photo slides in with tilt
+      gsap.fromTo(photoRef.current,
+        { x: -40, rotate: -10, opacity: 0 },
+        { x: 0, rotate: -7, opacity: 1, duration: 1.1, ease: "power3.out",
+          scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
+      );
+      gsap.to(photoRef.current, {
+        y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
     }, sectionRef);
     return () => ctx.revert();
@@ -58,6 +69,38 @@ export default function Values() {
         border: "1px solid rgba(107,117,96,0.18)",
         pointerEvents: "none",
       }} />
+
+      {/* Diary photo — bottom right, peeking */}
+      <div
+        ref={photoRef}
+        style={{
+          position: "absolute",
+          bottom: "clamp(24px, 4vw, 56px)",
+          left: "clamp(16px, 3vw, 44px)",
+          zIndex: 5,
+          transform: "rotate(-7deg)",
+        }}
+      >
+        <div className="photo-frame" style={{
+          width: "clamp(88px, 11vw, 140px)",
+          height: "clamp(115px, 14vw, 180px)",
+          borderRadius: "3px",
+        }}>
+          <div style={{
+            width: "100%", height: "78%",
+            background: "linear-gradient(150deg, #cac4b4 0%, #b8b2a2 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "16px", color: "rgba(28,28,26,0.22)" }}>✦</span>
+          </div>
+          <div style={{
+            height: "22%", background: "rgba(255,255,255,0.62)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", color: "rgba(28,28,26,0.32)" }}>my values ✦</span>
+          </div>
+        </div>
+      </div>
 
       <div className="wrap">
         {/* Header row */}

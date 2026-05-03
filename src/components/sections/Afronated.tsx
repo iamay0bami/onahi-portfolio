@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Afronated() {
   const sectionRef = useRef<HTMLElement>(null);
+  const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -15,6 +16,17 @@ export default function Afronated() {
           { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", delay: i * 0.1,
             scrollTrigger: { trigger: el, start: "top 84%" } }
         );
+      });
+
+      // Photo floats in from left
+      gsap.fromTo(photoRef.current,
+        { x: -50, rotate: -8, opacity: 0 },
+        { x: 0, rotate: -5, opacity: 1, duration: 1.2, ease: "power3.out",
+          scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
+      );
+      // Gentle sway
+      gsap.to(photoRef.current, {
+        rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
     }, sectionRef);
     return () => ctx.revert();
@@ -32,7 +44,7 @@ export default function Afronated() {
         overflow: "hidden",
       }}
     >
-      {/* Large faint text watermark */}
+      {/* Large faint watermark text */}
       <div aria-hidden style={{
         position: "absolute", right: "-2%", bottom: "-4%",
         fontFamily: "var(--font-serif)", fontSize: "clamp(100px,18vw,280px)",
@@ -41,6 +53,38 @@ export default function Afronated() {
         lineHeight: 1, pointerEvents: "none", userSelect: "none",
         whiteSpace: "nowrap",
       }}>Afronated</div>
+
+      {/* Floating diary photo — top left, outside main grid */}
+      <div
+        ref={photoRef}
+        style={{
+          position: "absolute",
+          top: "clamp(40px, 6vw, 80px)",
+          left: "clamp(16px, 3vw, 48px)",
+          zIndex: 5,
+          transform: "rotate(-5deg)",
+        }}
+      >
+        <div className="photo-frame" style={{
+          width: "clamp(90px, 11vw, 145px)",
+          height: "clamp(115px, 14vw, 185px)",
+          borderRadius: "3px",
+        }}>
+          <div style={{
+            width: "100%", height: "78%",
+            background: "linear-gradient(145deg, #c4c0b0 0%, #b2ae9e 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "16px", color: "rgba(28,28,26,0.22)" }}>✦</span>
+          </div>
+          <div style={{
+            height: "22%", background: "rgba(255,255,255,0.65)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", color: "rgba(28,28,26,0.32)" }}>Afronated ✦</span>
+          </div>
+        </div>
+      </div>
 
       <div className="wrap">
         <div style={{
@@ -113,7 +157,7 @@ export default function Afronated() {
                 </text>
               </svg>
 
-              {/* Photo placeholder in center of ring */}
+              {/* Photo placeholder in centre of ring */}
               <div style={{
                 width: "58%", height: "58%", borderRadius: "50%",
                 background: "linear-gradient(135deg, var(--cream-warm), var(--sage))",
@@ -123,7 +167,7 @@ export default function Afronated() {
                 border: "6px solid var(--off-white)",
                 boxShadow: "2px 3px 12px rgba(0,0,0,0.1)",
               }}>
-                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "clamp(18px,2.5vw,28px)", color: "rgba(28,28,26,0.35)" }}>O</span>
+                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "clamp(18px,2.5vw,28px)", color: "rgba(28,28,26,0.35)" }}>✦</span>
                 <span style={{ fontFamily: "var(--font-sans)", fontSize: "9px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.25)", textTransform: "uppercase" }}>Photo</span>
               </div>
             </div>
@@ -162,7 +206,9 @@ export default function Afronated() {
       </div>
 
       <style jsx>{`
-        @media (max-width: 768px) { .afrn-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 768px) {
+          .afrn-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
     </section>
   );

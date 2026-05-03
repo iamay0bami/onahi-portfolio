@@ -10,6 +10,7 @@ export default function About() {
   const bioRef     = useRef<HTMLDivElement>(null);
   const img1Ref    = useRef<HTMLDivElement>(null);
   const img2Ref    = useRef<HTMLDivElement>(null);
+  const img3Ref    = useRef<HTMLDivElement>(null); // new 3rd photo — polaroid floating
   const circleRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,11 +35,21 @@ export default function About() {
         { y: 0, opacity: 1, rotate: 5, duration: 1.1, ease: "power3.out", delay: 0.12,
           scrollTrigger: { trigger: img2Ref.current, start: "top 85%" } }
       );
+      gsap.fromTo(img3Ref.current,
+        { y: -30, x: 30, opacity: 0, rotate: -8 },
+        { y: 0, x: 0, opacity: 1, rotate: -6, duration: 1.2, ease: "power3.out", delay: 0.22,
+          scrollTrigger: { trigger: img3Ref.current, start: "top 88%" } }
+      );
       gsap.fromTo(circleRef.current,
         { scale: 0.75, opacity: 0 },
         { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
           scrollTrigger: { trigger: circleRef.current, start: "top 85%" } }
       );
+
+      // Gentle float on the 3rd photo
+      gsap.to(img3Ref.current, {
+        y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
+      });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -55,6 +66,9 @@ export default function About() {
         overflow: "hidden",
       }}
     >
+      {/* The bowl2 for the floating ball to land in is rendered here by FloatingBall component — 
+          it's absolutely positioned relative to the hero. The bowl in this section is purely decorative. */}
+
       <div className="wrap">
 
         {/* TOP — headline + bio */}
@@ -109,7 +123,7 @@ export default function About() {
           </div>
         </div>
 
-        {/* BOTTOM — diary-style photo pair + spinning circle */}
+        {/* BOTTOM — diary-style photos cluster */}
         <div style={{
           display: "flex",
           alignItems: "flex-end",
@@ -119,7 +133,7 @@ export default function About() {
           position: "relative",
         }}>
 
-          {/* Green soft circle behind the photos — reference detail */}
+          {/* Green soft circle behind the photos */}
           <div ref={circleRef} style={{
             position: "absolute",
             left: "50%", bottom: "-20px",
@@ -131,6 +145,36 @@ export default function About() {
             zIndex: 0,
           }} aria-hidden="true" />
 
+          {/* Photo 3 — small polaroid, floats above the group, top-left */}
+          <div ref={img3Ref} style={{
+            position: "absolute",
+            top: "-50px",
+            left: "clamp(0px, 4vw, 60px)",
+            zIndex: 5,
+            transform: "rotate(-6deg)",
+          }}>
+            <div className="photo-frame" style={{
+              width: "clamp(100px, 13vw, 165px)",
+              height: "clamp(130px, 17vw, 215px)",
+              borderRadius: "3px",
+            }}>
+              <div style={{
+                width: "100%", height: "80%",
+                background: "linear-gradient(150deg, #d4c8b8 0%, #c0b8a8 100%)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "18px", color: "rgba(28,28,26,0.25)" }}>✦</span>
+              </div>
+              {/* Polaroid white strip at bottom */}
+              <div style={{
+                height: "20%", background: "rgba(255,255,255,0.7)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "9px", color: "rgba(28,28,26,0.35)" }}>Lagos, 2024</span>
+              </div>
+            </div>
+          </div>
+
           {/* Photo 1 — larger, tilted left */}
           <div ref={img1Ref} className="photo-frame" style={{
             width: "clamp(180px, 26vw, 340px)",
@@ -139,21 +183,17 @@ export default function About() {
             position: "relative", zIndex: 2,
             borderRadius: "4px",
           }}>
-            {/* Placeholder — user replaces with <img> */}
             <div style={{
               width: "100%", height: "100%",
               background: "linear-gradient(160deg, #c8c4b8 0%, #b0ad9d 100%)",
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: "8px",
             }}>
-              <div style={{
-                width: 52, height: 52, borderRadius: "50%",
-                border: "1.5px solid rgba(28,28,26,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "22px", color: "rgba(28,28,26,0.45)" }}>O</span>
-              </div>
-              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.3)", textTransform: "uppercase" }}>Photo</span>
+              <svg width="44" height="54" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.22 }}>
+                <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.8)" />
+                <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.8)" strokeWidth="1.5" fill="none" />
+              </svg>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.28)", textTransform: "uppercase" }}>Photo</span>
             </div>
           </div>
 
@@ -171,20 +211,17 @@ export default function About() {
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: "8px",
             }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: "50%",
-                border: "1.5px solid rgba(28,28,26,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "17px", color: "rgba(28,28,26,0.45)" }}>O</span>
-              </div>
-              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.3)", textTransform: "uppercase" }}>Photo</span>
+              <svg width="36" height="44" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.22 }}>
+                <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.8)" />
+                <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.8)" strokeWidth="1.5" fill="none" />
+              </svg>
+              <span style={{ fontFamily: "var(--font-sans)", fontSize: "10px", letterSpacing: "0.1em", color: "rgba(28,28,26,0.28)", textTransform: "uppercase" }}>Photo</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Spinning circular text — exactly like the reference, portrait overlapping */}
+      {/* Spinning circular text */}
       <div style={{
         position: "absolute",
         right: "clamp(20px, 5vw, 80px)", top: "50%",

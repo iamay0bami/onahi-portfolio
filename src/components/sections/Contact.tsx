@@ -4,15 +4,15 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
-const INQUIRY_TYPES = ["General", "Creative Direction", "Curation", "Collaboration", "Speaking", "Media"];
+const INQUIRY_TYPES = ["General", "Creative Direction", "Curation", "Collaboration", "Brand Work", "Media"];
 
 export default function Contact() {
   const sectionRef  = useRef<HTMLElement>(null);
   const emailRef    = useRef<HTMLAnchorElement>(null);
   const formRef     = useRef<HTMLDivElement>(null);
-  const [inquiry, setInquiry]   = useState("General");
-  const [form, setForm]         = useState({ name: "", email: "", message: "" });
-  const [sent, setSent]         = useState(false);
+  const [inquiry, setInquiry] = useState("General");
+  const [form, setForm]       = useState({ name: "", email: "", message: "" });
+  const [sent, setSent]       = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -46,32 +46,33 @@ export default function Contact() {
         overflow: "hidden",
       }}
     >
-      {/* Pinstripe on contact too */}
+      {/* Pinstripe */}
       <div style={{
         position: "absolute", inset: 0,
         background: "repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(0,0,0,0.03) 38px, rgba(0,0,0,0.03) 39px)",
         pointerEvents: "none",
       }} />
 
-      {/* Top colour bar — terracotta → gold → sage */}
+      {/* Top accent bar */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: "4px",
         background: "linear-gradient(90deg, var(--terracotta), var(--gold), var(--sage-deep))",
       }} />
 
       <div className="wrap">
-        {/* Big email address */}
+        {/* Big email */}
         <a
           ref={emailRef}
           href="mailto:hello@onahiijeh.com"
           style={{
             display: "block",
             fontFamily: "var(--font-serif)", fontWeight: 300,
-            fontSize: "clamp(26px,5vw,76px)",
+            fontSize: "clamp(22px,4.5vw,68px)",
             lineHeight: 1.05, letterSpacing: "-0.02em",
             color: "var(--charcoal)", textDecoration: "none",
             marginBottom: "clamp(40px,6vw,72px)",
             transition: "color 0.3s ease",
+            wordBreak: "break-all",
           }}
           onMouseEnter={e => (e.currentTarget.style.color = "var(--terracotta)")}
           onMouseLeave={e => (e.currentTarget.style.color = "var(--charcoal)")}
@@ -158,8 +159,14 @@ export default function Contact() {
                     display: "flex", alignItems: "center", justifyContent: "center",
                     transition: "background 0.25s ease, transform 0.2s ease",
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--terracotta)"; (e.currentTarget as HTMLElement).style.transform = "scale(1.08)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "var(--charcoal)"; (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background = "var(--terracotta)";
+                    (e.currentTarget as HTMLElement).style.transform = "scale(1.08)";
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background = "var(--charcoal)";
+                    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+                  }}
                   aria-label="Send"
                 >
                   →
@@ -168,7 +175,7 @@ export default function Contact() {
             </>
           )}
 
-          {/* Socials */}
+          {/* Socials — correct handles */}
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             {[
               { label: "Instagram ↗", url: "https://www.instagram.com/onahiijeh" },
@@ -188,8 +195,14 @@ export default function Contact() {
                   border: "1px solid rgba(28,28,26,0.2)",
                   transition: "all 0.22s ease",
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--charcoal)"; (e.currentTarget as HTMLElement).style.color = "var(--off-white)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--charcoal)"; }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = "var(--charcoal)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--off-white)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                  (e.currentTarget as HTMLElement).style.color = "var(--charcoal)";
+                }}
               >
                 {s.label}
               </a>
