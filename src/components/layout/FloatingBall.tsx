@@ -36,6 +36,7 @@ export default function FloatingBall() {
     placeBallInBowl(bowl1, ball);
 
     // ─── CURSOR PROXIMITY — ball shifts inside bowl ───
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let cursorX = 0;
     const onMouseMove = (e: MouseEvent) => {
       if (!inBowl || animating.current) return;
