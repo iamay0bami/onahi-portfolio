@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 
 const VALUES = [
   { icon: "◎", title: "Culture is the foundation",       desc: "Everything starts from culture — it shapes how we see, what we build, and who we build it for." },
@@ -13,44 +13,17 @@ const QUOTE = `"For me, creativity is about amplifying what already exists — t
 
 export default function Values() {
   const sectionRef = useRef<HTMLElement>(null);
-  const quoteRef   = useRef<HTMLDivElement>(null);
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
-        if (words) {
-          gsap.fromTo(words,
-            { y: 18, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.65, ease: "power2.out", stagger: 0.035,
-              scrollTrigger: { trigger: quoteRef.current, start: "top 82%", once: true } }
-          );
-        }
-        gsap.utils.toArray<HTMLElement>(".val-reveal").forEach((el, i) => {
-          gsap.fromTo(el,
-            { y: 36, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.1,
-              scrollTrigger: { trigger: el, start: "top 90%", once: true } }
-          );
-        });
+    const ctx = gsap.context(() => {
+      // Only float animation — no opacity manipulation
+      gsap.to(photoRef.current, {
+        y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
+      });
+    }, sectionRef);
 
-        gsap.fromTo(photoRef.current,
-          { x: -40, rotate: -10, opacity: 0 },
-          { x: 0, rotate: -7, opacity: 1, duration: 1.1, ease: "power3.out",
-            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
-        );
-        gsap.to(photoRef.current, {
-          y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
-        });
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -74,7 +47,7 @@ export default function Values() {
         pointerEvents: "none",
       }} />
 
-      {/* Diary photo */}
+      {/* Diary photo — CSS animated */}
       <div
         ref={photoRef}
         style={{
@@ -83,6 +56,7 @@ export default function Values() {
           left: "clamp(16px, 3vw, 44px)",
           zIndex: 5,
           transform: "rotate(-7deg)",
+          animation: "fadeIn 1s ease 0.3s both",
         }}
       >
         <div className="photo-frame" style={{
@@ -107,7 +81,7 @@ export default function Values() {
       </div>
 
       <div className="wrap">
-        {/* Header row */}
+        {/* Header row — CSS animated */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "auto 1fr",
@@ -115,7 +89,8 @@ export default function Values() {
           alignItems: "start",
           marginBottom: "clamp(56px,8vw,96px)",
         }} className="val-header">
-          <div className="val-reveal">
+
+          <div style={{ animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
             <span style={{
               display: "block",
               fontFamily: "var(--font-sans)", fontSize: "11px",
@@ -132,30 +107,33 @@ export default function Values() {
             </h2>
           </div>
 
-          {/* Quote — word-by-word reveal */}
-          <div ref={quoteRef} style={{ paddingTop: "clamp(10px,1.5vw,20px)", maxWidth: "520px" }}>
+          {/* Quote — CSS animated */}
+          <div style={{ paddingTop: "clamp(10px,1.5vw,20px)", maxWidth: "520px", animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.25s both" }}>
             <p style={{
               fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 300,
               fontSize: "clamp(15px,1.7vw,21px)",
               lineHeight: 1.6, color: "var(--charcoal-soft)",
             }}>
-              {QUOTE.split(" ").map((word, i) => (
-                <span key={i} className="w" style={{ display: "inline-block", marginRight: "0.3em" }}>
-                  {word}
-                </span>
-              ))}
+              {QUOTE}
             </p>
           </div>
         </div>
 
-        {/* Value cards 2×2 */}
+        {/* Value cards 2×2 — CSS animated with stagger */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(2,1fr)",
           gap: "clamp(10px,1.6vw,18px)",
         }} className="val-cards">
           {VALUES.map((v, i) => (
-            <div key={i} className="val-card val-reveal" style={{ alignItems: "flex-start" }}>
+            <div
+              key={i}
+              className="val-card"
+              style={{
+                alignItems: "flex-start",
+                animation: `fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.1}s both`,
+              }}
+            >
               <div style={{
                 width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
                 background: i % 3 === 0 ? "rgba(107,117,96,0.18)"

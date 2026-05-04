@@ -1,63 +1,24 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const hlRef      = useRef<HTMLDivElement>(null);
-  const bioRef     = useRef<HTMLDivElement>(null);
-  const img1Ref    = useRef<HTMLDivElement>(null);
-  const img2Ref    = useRef<HTMLDivElement>(null);
   const img3Ref    = useRef<HTMLDivElement>(null);
-  const circleRef  = useRef<HTMLDivElement>(null);
+  const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Small delay to ensure Lenis + ScrollTrigger are both ready
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        gsap.fromTo(hlRef.current,
-          { y: 55, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, ease: "power3.out",
-            scrollTrigger: { trigger: hlRef.current, start: "top 85%", once: true } }
-        );
-        gsap.fromTo(bioRef.current,
-          { y: 35, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
-            scrollTrigger: { trigger: bioRef.current, start: "top 85%", once: true } }
-        );
-        gsap.fromTo(img1Ref.current,
-          { y: 60, opacity: 0, rotate: -5 },
-          { y: 0, opacity: 1, rotate: -4, duration: 1.1, ease: "power3.out",
-            scrollTrigger: { trigger: img1Ref.current, start: "top 88%", once: true } }
-        );
-        gsap.fromTo(img2Ref.current,
-          { y: 80, opacity: 0, rotate: 3 },
-          { y: 0, opacity: 1, rotate: 5, duration: 1.1, ease: "power3.out", delay: 0.12,
-            scrollTrigger: { trigger: img2Ref.current, start: "top 88%", once: true } }
-        );
-        gsap.fromTo(img3Ref.current,
-          { y: -30, x: 30, opacity: 0, rotate: -8 },
-          { y: 0, x: 0, opacity: 1, rotate: -6, duration: 1.2, ease: "power3.out", delay: 0.22,
-            scrollTrigger: { trigger: img3Ref.current, start: "top 90%", once: true } }
-        );
-        gsap.fromTo(circleRef.current,
-          { scale: 0.75, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
-            scrollTrigger: { trigger: circleRef.current, start: "top 88%", once: true } }
-        );
+    const ctx = gsap.context(() => {
+      // Only GSAP for continuous float — no initial opacity manipulation
+      gsap.to(img3Ref.current, {
+        y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
+      });
+      gsap.to(photoRef.current, {
+        y: -6, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
+      });
+    }, sectionRef);
 
-        // Gentle float on the 3rd photo
-        gsap.to(img3Ref.current, {
-          y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
-        });
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -83,7 +44,8 @@ export default function About() {
           marginBottom: "clamp(64px, 10vw, 120px)",
         }} className="about-top">
 
-          <div ref={hlRef}>
+          {/* Headline — CSS animated */}
+          <div style={{ animation: "fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
             <h2 style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
               fontSize: "clamp(44px, 7vw, 96px)",
@@ -104,7 +66,8 @@ export default function About() {
             </div>
           </div>
 
-          <div ref={bioRef} style={{ paddingTop: "8px" }}>
+          {/* Bio — CSS animated with slight delay */}
+          <div style={{ paddingTop: "8px", animation: "fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.25s both" }}>
             <p style={{
               fontFamily: "var(--font-sans)", fontSize: "clamp(14px, 1.4vw, 17px)",
               fontWeight: 300, lineHeight: 1.8, color: "var(--charcoal-soft)",
@@ -136,8 +99,8 @@ export default function About() {
           position: "relative",
         }}>
 
-          {/* Green soft circle */}
-          <div ref={circleRef} style={{
+          {/* Green soft circle — CSS animated */}
+          <div style={{
             position: "absolute",
             left: "50%", bottom: "-20px",
             transform: "translateX(-50%)",
@@ -146,16 +109,21 @@ export default function About() {
             borderRadius: "50%",
             background: "radial-gradient(circle, rgba(184,191,168,0.6) 0%, rgba(184,191,168,0.15) 70%, transparent 100%)",
             zIndex: 0,
+            animation: "fadeIn 1.3s ease 0.3s both",
           }} aria-hidden="true" />
 
-          {/* Photo 3 — small polaroid, floats above the group */}
-          <div ref={img3Ref} style={{
-            position: "absolute",
-            top: "-50px",
-            left: "clamp(0px, 4vw, 60px)",
-            zIndex: 5,
-            transform: "rotate(-6deg)",
-          }}>
+          {/* Photo 3 — small polaroid, floats — CSS animated */}
+          <div
+            ref={img3Ref}
+            style={{
+              position: "absolute",
+              top: "-50px",
+              left: "clamp(0px, 4vw, 60px)",
+              zIndex: 5,
+              transform: "rotate(-6deg)",
+              animation: "fadeIn 1.2s ease 0.5s both",
+            }}
+          >
             <div className="photo-frame" style={{
               width: "clamp(100px, 13vw, 165px)",
               height: "clamp(130px, 17vw, 215px)",
@@ -177,14 +145,19 @@ export default function About() {
             </div>
           </div>
 
-          {/* Photo 1 — larger, tilted left */}
-          <div ref={img1Ref} className="photo-frame" style={{
-            width: "clamp(180px, 26vw, 340px)",
-            height: "clamp(240px, 34vw, 440px)",
-            transform: "rotate(-4deg)",
-            position: "relative", zIndex: 2,
-            borderRadius: "4px",
-          }}>
+          {/* Photo 1 — larger, tilted left — CSS animated */}
+          <div
+            ref={photoRef}
+            className="photo-frame"
+            style={{
+              width: "clamp(180px, 26vw, 340px)",
+              height: "clamp(240px, 34vw, 440px)",
+              transform: "rotate(-4deg)",
+              position: "relative", zIndex: 2,
+              borderRadius: "4px",
+              animation: "fadeUp 1.1s cubic-bezier(0.22,1,0.36,1) 0.2s both",
+            }}
+          >
             <div style={{
               width: "100%", height: "100%",
               background: "linear-gradient(160deg, #c8c4b8 0%, #b0ad9d 100%)",
@@ -199,13 +172,14 @@ export default function About() {
             </div>
           </div>
 
-          {/* Photo 2 — smaller, tilted right */}
-          <div ref={img2Ref} className="photo-frame" style={{
+          {/* Photo 2 — smaller, tilted right — CSS animated */}
+          <div className="photo-frame" style={{
             width: "clamp(140px, 20vw, 260px)",
             height: "clamp(180px, 26vw, 340px)",
             transform: "rotate(5deg) translateY(-18px)",
             position: "relative", zIndex: 3,
             borderRadius: "4px",
+            animation: "fadeUp 1.1s cubic-bezier(0.22,1,0.36,1) 0.35s both",
           }}>
             <div style={{
               width: "100%", height: "100%",

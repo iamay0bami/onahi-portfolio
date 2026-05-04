@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 
 const SKILLS = [
   { category: "Creative",    items: ["Brand Identity", "Creative Direction", "Art Direction", "Mood Boarding", "Storyboarding", "Visual Curation"] },
@@ -21,32 +21,14 @@ export default function CreativeJourney() {
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>(".journey-reveal").forEach((el, i) => {
-          gsap.fromTo(el,
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.07,
-              scrollTrigger: { trigger: el, start: "top 90%", once: true } }
-          );
-        });
+    const ctx = gsap.context(() => {
+      // Only continuous float — no initial opacity changes
+      gsap.to(photoRef.current, {
+        y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
+      });
+    }, sectionRef);
 
-        gsap.fromTo(photoRef.current,
-          { x: 60, rotate: 7, opacity: 0 },
-          { x: 0, rotate: 5, opacity: 1, duration: 1.2, ease: "power3.out",
-            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
-        );
-        gsap.to(photoRef.current, {
-          y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.8,
-        });
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -61,7 +43,7 @@ export default function CreativeJourney() {
         overflow: "hidden",
       }}
     >
-      {/* Floating diary photo — top right */}
+      {/* Floating diary photo — CSS animated */}
       <div
         ref={photoRef}
         style={{
@@ -70,6 +52,7 @@ export default function CreativeJourney() {
           right: "clamp(16px, 4vw, 56px)",
           zIndex: 5,
           transform: "rotate(5deg)",
+          animation: "fadeIn 1s ease 0.2s both",
         }}
       >
         <div className="photo-frame" style={{
@@ -95,8 +78,8 @@ export default function CreativeJourney() {
 
       <div className="wrap">
 
-        {/* Section header */}
-        <div className="journey-reveal" style={{ marginBottom: "clamp(48px,7vw,88px)" }}>
+        {/* Section header — CSS animated */}
+        <div style={{ marginBottom: "clamp(48px,7vw,88px)", animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
           <span style={{
             display: "block",
             fontFamily: "var(--font-sans)", fontSize: "11px",
@@ -113,12 +96,11 @@ export default function CreativeJourney() {
           </h2>
         </div>
 
-        {/* Timeline highlights */}
+        {/* Timeline highlights — CSS animated with stagger */}
         <div style={{ marginBottom: "clamp(56px,8vw,96px)" }}>
           {HIGHLIGHTS.map((h, i) => (
             <div
               key={i}
-              className="journey-reveal"
               style={{
                 borderTop: "1px solid rgba(28,28,26,0.1)",
                 padding: "clamp(16px,2.5vw,28px) 0",
@@ -126,6 +108,7 @@ export default function CreativeJourney() {
                 gridTemplateColumns: "clamp(70px,10vw,120px) 1fr",
                 gap: "clamp(16px,3vw,40px)",
                 alignItems: "start",
+                animation: `slideInLeft 0.7s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.08}s both`,
               }}
             >
               <span style={{
@@ -150,8 +133,8 @@ export default function CreativeJourney() {
           <div style={{ borderTop: "1px solid rgba(28,28,26,0.1)" }} />
         </div>
 
-        {/* Skills grid */}
-        <div className="journey-reveal" style={{ marginBottom: "clamp(12px,2vw,20px)" }}>
+        {/* Skills grid — CSS animated */}
+        <div style={{ marginBottom: "clamp(12px,2vw,20px)", animation: "fadeUp 0.8s ease 0.15s both" }}>
           <span style={{
             fontFamily: "var(--font-sans)", fontSize: "11px",
             letterSpacing: "0.2em", textTransform: "uppercase",
@@ -165,7 +148,14 @@ export default function CreativeJourney() {
           gap: "clamp(14px,2vw,24px)",
         }}>
           {SKILLS.map((group, gi) => (
-            <div key={gi} className="journey-reveal val-card" style={{ flexDirection: "column", alignItems: "flex-start", gap: "12px" }}>
+            <div
+              key={gi}
+              className="val-card"
+              style={{
+                flexDirection: "column", alignItems: "flex-start", gap: "12px",
+                animation: `fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) ${0.2 + gi * 0.08}s both`,
+              }}
+            >
               <span style={{
                 fontFamily: "var(--font-sans)", fontSize: "10px",
                 letterSpacing: "0.18em", textTransform: "uppercase",

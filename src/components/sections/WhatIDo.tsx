@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const SERVICES = [
   { label: "Creative Direction",    desc: "End-to-end creative leadership — from concept through execution across campaigns, brands, and media." },
@@ -11,31 +9,9 @@ const SERVICES = [
 ];
 
 export default function WhatIDo() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>(".what-row").forEach((el, i) => {
-          gsap.fromTo(el,
-            { x: -28, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.08,
-              scrollTrigger: { trigger: el, start: "top 92%", once: true } }
-          );
-        });
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <section
       id="what"
-      ref={sectionRef}
       className="pinstripe"
       style={{
         background: "var(--sage)",
@@ -63,8 +39,8 @@ export default function WhatIDo() {
           alignItems: "start",
         }} className="what-grid">
 
-          {/* Left — big heading */}
-          <div className="what-row">
+          {/* Left — big heading — CSS animated */}
+          <div style={{ animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
             <p style={{
               fontFamily: "var(--font-sans)", fontSize: "11px",
               letterSpacing: "0.22em", textTransform: "uppercase",
@@ -81,16 +57,16 @@ export default function WhatIDo() {
             </h2>
           </div>
 
-          {/* Right — service rows */}
+          {/* Right — service rows — CSS animated with stagger */}
           <div style={{ paddingTop: "clamp(8px,1vw,16px)" }}>
             {SERVICES.map((s, i) => (
               <div
                 key={i}
-                className="what-row"
                 style={{
                   borderTop: "1px solid rgba(28,28,26,0.1)",
                   padding: "clamp(14px,2vw,22px) 0",
                   display: "flex", flexDirection: "column", gap: "4px",
+                  animation: `slideInLeft 0.7s cubic-bezier(0.22,1,0.36,1) ${0.15 + i * 0.08}s both`,
                 }}
               >
                 <div style={{

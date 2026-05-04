@@ -1,34 +1,12 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { useState } from "react";
 
 const INQUIRY_TYPES = ["General", "Creative Direction", "Curation", "Collaboration", "Brand Work", "Media"];
 
 export default function Contact() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const emailRef    = useRef<HTMLAnchorElement>(null);
-  const formRef     = useRef<HTMLDivElement>(null);
   const [inquiry, setInquiry] = useState("General");
   const [form, setForm]       = useState({ name: "", email: "", message: "" });
   const [sent, setSent]       = useState(false);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(emailRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "power3.out",
-          scrollTrigger: { trigger: emailRef.current, start: "top 82%" } }
-      );
-      gsap.fromTo(formRef.current,
-        { y: 36, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
-          scrollTrigger: { trigger: formRef.current, start: "top 85%" } }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,12 +16,13 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      ref={sectionRef}
       style={{
         background: "var(--off-white)",
         position: "relative",
         padding: "clamp(80px,12vw,160px) var(--container-pad) clamp(56px,8vw,96px)",
         overflow: "hidden",
+        /* Ensure always fully visible — no opacity tricks */
+        opacity: 1,
       }}
     >
       <style>{`
@@ -66,9 +45,8 @@ export default function Contact() {
       }} />
 
       <div className="wrap">
-        {/* Big email */}
+        {/* Big email — CSS animated */}
         <a
-          ref={emailRef}
           href="mailto:hello@onahiijeh.com"
           style={{
             display: "block",
@@ -79,6 +57,7 @@ export default function Contact() {
             marginBottom: "clamp(40px,6vw,72px)",
             transition: "color 0.3s ease",
             wordBreak: "break-all",
+            animation: "fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.1s both",
           }}
           onMouseEnter={e => (e.currentTarget.style.color = "var(--terracotta)")}
           onMouseLeave={e => (e.currentTarget.style.color = "var(--charcoal)")}
@@ -86,8 +65,8 @@ export default function Contact() {
           hello@onahiijeh.com
         </a>
 
-        {/* Form */}
-        <div ref={formRef}>
+        {/* Form — CSS animated */}
+        <div style={{ animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.25s both" }}>
           {sent ? (
             <p style={{
               fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 300,

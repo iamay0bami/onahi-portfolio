@@ -1,44 +1,10 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function QuoteBreak() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const quoteRef   = useRef<HTMLDivElement>(null);
-  const bowlRef    = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        gsap.fromTo(bowlRef.current,
-          { y: 80, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.3, ease: "power3.out",
-            scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true } }
-        );
-
-        const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
-        if (words) {
-          gsap.fromTo(words,
-            { y: 22, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", stagger: 0.05,
-              scrollTrigger: { trigger: quoteRef.current, start: "top 80%", once: true } }
-          );
-        }
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const quote = `I turn creative ideas into visuals that live and breathe online. With a background in music, media, and youth culture — I know what clicks, what resonates, and what doesn't.`;
 
   return (
     <section
-      ref={sectionRef}
       style={{
         background: "var(--cream)",
         position: "relative",
@@ -50,10 +16,11 @@ export default function QuoteBreak() {
         justifyContent: "flex-start",
       }}
     >
-      {/* Quote text */}
-      <div ref={quoteRef} style={{
+      {/* Quote text — CSS animated */}
+      <div style={{
         maxWidth: "var(--container-max)", margin: "0 auto", width: "100%",
         position: "relative", zIndex: 2,
+        animation: "fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.1s both",
       }}>
         <p style={{
           fontFamily: "var(--font-serif)", fontWeight: 300,
@@ -63,7 +30,7 @@ export default function QuoteBreak() {
           margin: "0 auto",
         }}>
           {quote.split(" ").map((word, i) => (
-            <span key={i} className="w" style={{ display: "inline-block", marginRight: "0.28em" }}>
+            <span key={i} style={{ display: "inline-block", marginRight: "0.28em" }}>
               {word.includes("clicks") || word.includes("resonates") || word.includes("music") || word.includes("culture")
                 ? <em>{word}</em>
                 : word
@@ -73,11 +40,12 @@ export default function QuoteBreak() {
         </p>
       </div>
 
-      {/* THE BOWL / ARC SHAPE */}
-      <div ref={bowlRef} style={{
+      {/* THE BOWL / ARC SHAPE — CSS animated */}
+      <div style={{
         position: "relative", zIndex: 1,
         marginTop: "clamp(48px, 8vw, 80px)",
         display: "flex", justifyContent: "center",
+        animation: "fadeUp 1.3s cubic-bezier(0.22,1,0.36,1) 0.2s both",
       }}>
         <div style={{
           width: "clamp(320px, 70vw, 900px)",

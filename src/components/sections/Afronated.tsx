@@ -1,38 +1,20 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 
 export default function Afronated() {
   const sectionRef = useRef<HTMLElement>(null);
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const ctx = gsap.context(() => {
-        gsap.utils.toArray<HTMLElement>(".afrn-reveal").forEach((el, i) => {
-          gsap.fromTo(el,
-            { y: 44, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", delay: i * 0.1,
-              scrollTrigger: { trigger: el, start: "top 84%", once: true } }
-          );
-        });
+    const ctx = gsap.context(() => {
+      // Only continuous float animation — no initial opacity changes
+      gsap.to(photoRef.current, {
+        rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
+      });
+    }, sectionRef);
 
-        gsap.fromTo(photoRef.current,
-          { x: -50, rotate: -8, opacity: 0 },
-          { x: 0, rotate: -5, opacity: 1, duration: 1.2, ease: "power3.out",
-            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
-        );
-        gsap.to(photoRef.current, {
-          rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
-        });
-
-        ScrollTrigger.refresh();
-      }, sectionRef);
-
-      return () => ctx.revert();
-    }, 300);
-
-    return () => clearTimeout(timer);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -57,7 +39,7 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/* Floating diary photo */}
+      {/* Floating diary photo — CSS animated */}
       <div
         ref={photoRef}
         style={{
@@ -66,6 +48,7 @@ export default function Afronated() {
           left: "clamp(16px, 3vw, 48px)",
           zIndex: 5,
           transform: "rotate(-5deg)",
+          animation: "fadeIn 1s ease 0.2s both",
         }}
       >
         <div className="photo-frame" style={{
@@ -97,29 +80,32 @@ export default function Afronated() {
           alignItems: "center",
         }} className="afrn-grid">
 
-          {/* Left */}
+          {/* Left — CSS animated */}
           <div>
-            <span className="afrn-reveal" style={{
+            <span style={{
               display: "block",
               fontFamily: "var(--font-sans)", fontSize: "11px", letterSpacing: "0.22em",
               textTransform: "uppercase", color: "var(--terracotta)",
               marginBottom: "14px", fontWeight: 300,
+              animation: "fadeUp 0.85s cubic-bezier(0.22,1,0.36,1) 0.1s both",
             }}>The Collective</span>
 
-            <h2 className="afrn-reveal" style={{
+            <h2 style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
               fontSize: "clamp(48px, 7.5vw, 108px)",
               lineHeight: 0.9, letterSpacing: "-0.02em",
               color: "var(--charcoal)",
               marginBottom: "clamp(18px, 2.5vw, 28px)",
+              animation: "fadeUp 0.85s cubic-bezier(0.22,1,0.36,1) 0.2s both",
             }}>
               Afron<em style={{ fontStyle: "italic" }}>ated</em>
             </h2>
 
-            <p className="afrn-reveal" style={{
+            <p style={{
               fontFamily: "var(--font-sans)", fontSize: "clamp(14px,1.35vw,17px)",
               fontWeight: 300, lineHeight: 1.8, color: "var(--charcoal-soft)",
               maxWidth: "460px", marginBottom: "28px",
+              animation: "fadeUp 0.85s cubic-bezier(0.22,1,0.36,1) 0.3s both",
             }}>
               A creative media collective amplifying African voices through powerful
               storytelling, spotlight interviews, and cultural excellence.
@@ -128,17 +114,22 @@ export default function Afronated() {
 
             <a
               href="https://afronated.com" target="_blank" rel="noopener noreferrer"
-              className="afrn-reveal contact-pill"
-              style={{ background: "var(--charcoal)", color: "var(--cream)" }}
+              className="contact-pill"
+              style={{
+                background: "var(--charcoal)", color: "var(--cream)",
+                animation: "fadeUp 0.85s cubic-bezier(0.22,1,0.36,1) 0.4s both",
+                display: "inline-block",
+              }}
             >
               Visit Afronated ↗
             </a>
           </div>
 
-          {/* Right — spinning ring + photo */}
-          <div className="afrn-reveal" style={{
+          {/* Right — spinning ring + photo — CSS animated */}
+          <div style={{
             display: "flex", justifyContent: "center", alignItems: "center",
             position: "relative",
+            animation: "fadeIn 1s ease 0.3s both",
           }}>
             <div style={{
               width: "clamp(200px, 28vw, 360px)",
@@ -176,7 +167,7 @@ export default function Afronated() {
           </div>
         </div>
 
-        {/* Feature cards */}
+        {/* Feature cards — CSS animated with stagger */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))",
@@ -189,7 +180,11 @@ export default function Afronated() {
             { n: "Cultural Coverage",    d: "From Lagos art weeks to diaspora movements — we document what matters." },
             { n: "Community Building",  d: "A collective of voices, collaborators, and builders amplifying each other." },
           ].map((f, i) => (
-            <div key={i} className="afrn-reveal val-card">
+            <div
+              key={i}
+              className="val-card"
+              style={{ animation: `fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.1}s both` }}
+            >
               <div style={{
                 width: 38, height: 38, borderRadius: "50%",
                 background: i%2===0 ? "rgba(107,117,96,0.18)" : "rgba(155,95,68,0.15)",

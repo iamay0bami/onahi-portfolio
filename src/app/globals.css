@@ -156,6 +156,67 @@ html.lenis, html.lenis body { height: auto; }
 .spin-cw  { animation: spin-cw  20s linear infinite; }
 .spin-ccw { animation: spin-ccw 24s linear infinite; }
 
+/* ─── CSS REVEAL ANIMATIONS ─── 
+   These fire purely via CSS — no JS dependency.
+   Elements are VISIBLE by default; animation is additive decoration.
+─── */
+
+/* Fade up — used for section content */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade in — simple opacity */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Hero name clip reveal */
+@keyframes clipReveal {
+  from { clip-path: inset(0 0 100% 0); opacity: 0; transform: translateY(40px); }
+  to   { clip-path: inset(0 0 0% 0);   opacity: 1; transform: translateY(0); }
+}
+
+/* ─── SECTION ANIMATE CLASSES ─── */
+/* Default: content is visible. JS animations are purely decorative. */
+
+.section-reveal {
+  /* Content visible immediately — CSS animation fires on load */
+  animation: fadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.section-reveal-left {
+  animation: slideInLeft 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.section-reveal-right {
+  animation: slideInRight 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger delays */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+.delay-7 { animation-delay: 0.7s; }
+.delay-8 { animation-delay: 0.8s; }
+
 /* ─── HERO TYPOGRAPHY ─── */
 .hero-name {
   font-family: var(--font-serif);
@@ -314,9 +375,8 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ─── GSAP ANIMATION SAFETY NET ─────────────────────────────────────
-   Ensures elements are VISIBLE by default.
-   GSAP will override these when it's ready.
-   Without this, if ScrollTrigger fails to fire, content stays invisible.
+   NEVER let GSAP set opacity:0 as an initial state.
+   All content must be visible by default.
 ─────────────────────────────────────────────────────────────────── */
 .gsap-reveal {
   opacity: 1;

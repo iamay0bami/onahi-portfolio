@@ -1,8 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
 
 const PRESS = [
   { type: "Feature",   source: "Placeholder Media",   title: "The creative director redefining how Africa tells its story",       year: "2024" },
@@ -14,25 +10,9 @@ const PRESS = [
 ];
 
 export default function Press() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".press-row").forEach((el, i) => {
-        gsap.fromTo(el,
-          { y: 24, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.62, ease: "power2.out", delay: i * 0.07,
-            scrollTrigger: { trigger: el, start: "top 93%" } }
-        );
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
       id="press"
-      ref={sectionRef}
       className="pinstripe"
       style={{
         background: "var(--cream)",
@@ -41,7 +21,8 @@ export default function Press() {
       }}
     >
       <div className="wrap">
-        <div style={{ marginBottom: "clamp(36px,5vw,72px)" }}>
+        {/* Header — CSS animated */}
+        <div style={{ marginBottom: "clamp(36px,5vw,72px)", animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
           <h2 style={{
             fontFamily: "var(--font-serif)", fontWeight: 300,
             fontSize: "clamp(44px,6.5vw,96px)",
@@ -60,18 +41,14 @@ export default function Press() {
           </p>
         </div>
 
+        {/* Press rows — CSS animated with stagger */}
         <div>
           {PRESS.map((item, i) => (
             <div
               key={i}
               className="press-row"
               style={{
-                borderTop: "1px solid rgba(28,28,26,0.1)",
-                padding: "clamp(14px,2.2vw,26px) 0",
-                display: "flex", alignItems: "center",
-                gap: "clamp(12px,2vw,28px)",
-                cursor: "pointer",
-                transition: "padding-left 0.3s ease",
+                animation: `slideInLeft 0.65s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.07}s both`,
               }}
               onMouseEnter={e => (e.currentTarget.style.paddingLeft = "10px")}
               onMouseLeave={e => (e.currentTarget.style.paddingLeft = "0")}

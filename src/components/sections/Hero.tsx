@@ -5,47 +5,18 @@ import FloatingBall from "@/components/layout/FloatingBall";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const firstName  = useRef<HTMLDivElement>(null);
-  const lastName   = useRef<HTMLDivElement>(null);
-  const subRef     = useRef<HTMLDivElement>(null);
   const photoRef   = useRef<HTMLDivElement>(null);
   const scrollRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.3 });
-
-      tl.fromTo(firstName.current,
-        { y: 70, opacity: 0, clipPath: "inset(0 0 100% 0)" },
-        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.1, ease: "power4.out" }
-      )
-      .fromTo(lastName.current,
-        { y: 70, opacity: 0, clipPath: "inset(0 0 100% 0)" },
-        { y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)", duration: 1.1, ease: "power4.out" },
-        "-=0.75"
-      )
-      .fromTo(subRef.current,
-        { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out" },
-        "-=0.45"
-      )
-      .fromTo(photoRef.current,
-        { x: 60, opacity: 0, rotate: 4 },
-        { x: 0, opacity: 1, rotate: 3, duration: 1.1, ease: "power3.out" },
-        "-=0.65"
-      )
-      .fromTo(scrollRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.6 },
-        "-=0.3"
-      );
-
-      gsap.to(scrollRef.current, {
-        y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1,
-      });
-
+      // Only GSAP-animate the photo float and scroll indicator bob.
+      // The text uses CSS @keyframes — no GSAP opacity risk.
       gsap.to(photoRef.current, {
         y: -8, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
+      });
+      gsap.to(scrollRef.current, {
+        y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1,
       });
     }, sectionRef);
 
@@ -95,27 +66,39 @@ export default function Hero() {
         alignItems: "center",
       }} className="hero-grid">
 
-        {/* LEFT — Name + quote */}
+        {/* LEFT — Name + quote — all CSS animated */}
         <div>
-          <div ref={firstName} style={{
-            fontFamily: "var(--font-serif)", fontWeight: 300,
-            fontSize: "clamp(70px, 12vw, 190px)",
-            lineHeight: 0.88, letterSpacing: "-0.025em",
-            color: "var(--charcoal)",
-          }}>Onahi</div>
+          {/* First name: CSS clip reveal */}
+          <div
+            style={{
+              fontFamily: "var(--font-serif)", fontWeight: 300,
+              fontSize: "clamp(70px, 12vw, 190px)",
+              lineHeight: 0.88, letterSpacing: "-0.025em",
+              color: "var(--charcoal)",
+              animation: "clipReveal 1.1s cubic-bezier(0.22,1,0.36,1) 0.3s both",
+            }}
+          >Onahi</div>
 
-          <div ref={lastName} style={{
-            fontFamily: "var(--font-serif)", fontWeight: 300, fontStyle: "italic",
-            fontSize: "clamp(70px, 12vw, 190px)",
-            lineHeight: 0.88, letterSpacing: "-0.02em",
-            color: "var(--charcoal)",
-            marginTop: "clamp(4px, 0.5vw, 10px)",
-          }}>Ijeh.</div>
+          {/* Last name: CSS clip reveal, slight delay */}
+          <div
+            style={{
+              fontFamily: "var(--font-serif)", fontWeight: 300, fontStyle: "italic",
+              fontSize: "clamp(70px, 12vw, 190px)",
+              lineHeight: 0.88, letterSpacing: "-0.02em",
+              color: "var(--charcoal)",
+              marginTop: "clamp(4px, 0.5vw, 10px)",
+              animation: "clipReveal 1.1s cubic-bezier(0.22,1,0.36,1) 0.55s both",
+            }}
+          >Ijeh.</div>
 
-          <div ref={subRef} style={{
-            marginTop: "clamp(22px, 3.5vw, 40px)",
-            maxWidth: "480px",
-          }}>
+          {/* Subtext: CSS fade up */}
+          <div
+            style={{
+              marginTop: "clamp(22px, 3.5vw, 40px)",
+              maxWidth: "480px",
+              animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.85s both",
+            }}
+          >
             <p style={{
               fontFamily: "var(--font-serif)", fontStyle: "italic",
               fontSize: "clamp(16px, 1.8vw, 22px)",
@@ -133,11 +116,15 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Headshot / diary photo */}
+        {/* RIGHT — Headshot / diary photo — CSS fade, GSAP only for float */}
         <div
           ref={photoRef}
           className="hero-photo-wrap"
-          style={{ flexShrink: 0, transform: "rotate(3deg)" }}
+          style={{
+            flexShrink: 0,
+            transform: "rotate(3deg)",
+            animation: "fadeIn 1.1s cubic-bezier(0.22,1,0.36,1) 0.9s both",
+          }}
         >
           <div className="photo-frame" style={{
             width: "clamp(140px, 18vw, 240px)",
@@ -179,12 +166,16 @@ export default function Hero() {
       <FloatingBall />
 
       {/* Scroll indicator */}
-      <div ref={scrollRef} style={{
-        position: "absolute", bottom: "36px", left: "50%",
-        transform: "translateX(-50%)",
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
-        zIndex: 5,
-      }}>
+      <div
+        ref={scrollRef}
+        style={{
+          position: "absolute", bottom: "36px", left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
+          zIndex: 5,
+          animation: "fadeIn 0.6s ease 1.4s both",
+        }}
+      >
         <span style={{
           fontFamily: "var(--font-sans)", fontSize: "10px",
           letterSpacing: "0.18em", color: "var(--sage-deep)",
