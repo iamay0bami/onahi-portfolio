@@ -18,18 +18,10 @@ export default function WhatIDo() {
         position: "relative",
         padding: "clamp(80px,12vw,160px) var(--container-pad)",
         overflow: "hidden",
+        // NO decorative semi-circular shape — clean background
       }}
     >
-      <div aria-hidden style={{
-        position: "absolute",
-        top: "50%", left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "clamp(500px, 72vw, 960px)",
-        height: "clamp(250px, 36vw, 480px)",
-        borderRadius: "0 0 50% 50% / 0 0 100% 100%",
-        border: "1px solid rgba(28,28,26,0.08)",
-        pointerEvents: "none",
-      }} />
+      {/* Removed: the faint bowl/semi-circular outline div that was here */}
 
       <div className="wrap">
         <div style={{

@@ -1,17 +1,27 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const ROLES = ["Creative Director", "Curator", "Founder", "Media Maker"];
 
 export default function Navbar() {
-  const [role, setRole] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
+  const [roleIdx, setRoleIdx] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const roleRef = useRef<HTMLSpanElement>(null);
   const navRef = useRef<HTMLElement>(null);
+  const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Auto-cycle roles every 2.5 seconds
+  const startCycle = useCallback(() => {
+    cycleRef.current = setInterval(() => {
+      setRoleIdx(prev => (prev + 1) % ROLES.length);
+    }, 2500);
+  }, []);
 
   useEffect(() => {
+    startCycle();
+
+    // Scroll-based role update (for section context)
     const timer = setTimeout(() => {
       const triggers = [
         { id: "#hero",      idx: 0 },
@@ -24,16 +34,20 @@ export default function Navbar() {
         if (!el) return;
         ScrollTrigger.create({
           trigger: el, start: "top 55%",
-          onEnter:     () => setRole(idx),
-          onEnterBack: () => setRole(Math.max(0, idx - 1)),
+          onEnter:     () => {
+            if (cycleRef.current) clearInterval(cycleRef.current);
+            setRoleIdx(idx);
+            startCycle();
+          },
+          onEnterBack: () => {
+            if (cycleRef.current) clearInterval(cycleRef.current);
+            setRoleIdx(Math.max(0, idx - 1));
+            startCycle();
+          },
         });
       });
-
       ScrollTrigger.refresh();
     }, 400);
-
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
 
     gsap.fromTo(navRef.current,
       { y: -20, opacity: 0 },
@@ -42,20 +56,25 @@ export default function Navbar() {
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
+      if (cycleRef.current) clearInterval(cycleRef.current);
     };
-  }, []);
+  }, [startCycle]);
 
   useEffect(() => {
     if (!roleRef.current) return;
     gsap.fromTo(roleRef.current,
-      { opacity: 0, y: 6 },
-      { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }
+      { opacity: 0, y: 5 },
+      { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
     );
-  }, [role]);
+  }, [roleIdx]);
 
   const scrollTo = (id: string) => {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setMenuOpen(false);
   };
 
@@ -65,20 +84,38 @@ export default function Navbar() {
         ref={navRef}
         style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
-          padding: "14px clamp(20px, 4vw, 56px)",
+          padding: "18px clamp(20px, 4vw, 56px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          transition: "background 0.4s ease, backdrop-filter 0.4s ease",
-          background: scrolled ? "rgba(184,191,168,0.88)" : "transparent",
-          backdropFilter: scrolled ? "blur(14px)" : "none",
+          // Always fully transparent — no background at any scroll position
+          background: "transparent",
+          backdropFilter: "none",
         }}
       >
-        <div className="role-badge">
+        {/* Clickable logo/role area — scrolls to top */}
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          style={{
+            background: "none", border: "none", cursor: "pointer",
+            display: "flex", alignItems: "center", gap: "10px",
+            padding: "4px 0",
+          }}
+        >
           <div className="logo-circle">
             <span>O</span>
           </div>
-          <span ref={roleRef} className="role-text">{ROLES[role]}</span>
-        </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "1px" }}>
+            <span
+              ref={roleRef}
+              className="role-text"
+              style={{ display: "block", lineHeight: 1.2 }}
+            >
+              {ROLES[roleIdx]}
+            </span>
+          </div>
+        </button>
 
+        {/* Desktop nav links */}
         <div className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: "clamp(18px, 2.5vw, 32px)" }}>
           {["#portfolio","#values","#what"].map((href, i) => (
             <button key={href} className="nav-link" onClick={() => scrollTo(href)}>
@@ -88,6 +125,7 @@ export default function Navbar() {
           <button className="contact-pill" onClick={() => scrollTo("#contact")}>Contact</button>
         </div>
 
+        {/* Mobile hamburger */}
         <button
           className="show-mobile"
           onClick={() => setMenuOpen(v => !v)}
@@ -109,6 +147,7 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {/* Mobile menu */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         {["#portfolio","#about","#values","#what","#contact"].map((h,i) => (
           <a key={h} onClick={() => scrollTo(h)} href="#">

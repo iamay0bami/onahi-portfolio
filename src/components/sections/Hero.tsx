@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
-import FloatingBall from "@/components/layout/FloatingBall";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -10,10 +9,9 @@ export default function Hero() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only GSAP-animate the photo float and scroll indicator bob.
-      // The text uses CSS @keyframes — no GSAP opacity risk.
+      // Only GSAP for continuous float on photo and scroll indicator bob
       gsap.to(photoRef.current, {
-        y: -8, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
+        y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
       gsap.to(scrollRef.current, {
         y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1,
@@ -39,36 +37,23 @@ export default function Hero() {
         padding: "120px var(--container-pad) 140px",
       }}
     >
-      {/* Organic textured circle */}
-      <div style={{
-        position: "absolute",
-        top: "50%", left: "50%",
-        transform: "translate(-18%, -50%)",
-        width: "clamp(260px, 40vw, 560px)",
-        height: "clamp(260px, 40vw, 560px)",
-        borderRadius: "50%",
-        zIndex: 0,
-        backgroundImage: `
-          radial-gradient(circle at 40% 40%, rgba(80,90,70,0.6), rgba(100,110,85,0.35) 60%, transparent 85%),
-          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E")
-        `,
-        backgroundSize: "cover",
-        backgroundBlendMode: "multiply",
-      }} aria-hidden="true" />
+      {/* NO sphere, NO bowl — clean sage background with only pinstripe */}
 
-      {/* Main content grid */}
-      <div style={{
-        position: "relative", zIndex: 2,
-        maxWidth: "var(--container-max)", margin: "0 auto", width: "100%",
-        display: "grid",
-        gridTemplateColumns: "1fr auto",
-        gap: "clamp(24px, 4vw, 56px)",
-        alignItems: "center",
-      }} className="hero-grid">
-
-        {/* LEFT — Name + quote — all CSS animated */}
+      {/* Main content grid: name left, photo right */}
+      <div
+        style={{
+          position: "relative", zIndex: 2,
+          maxWidth: "var(--container-max)", margin: "0 auto", width: "100%",
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
+          gap: "clamp(48px, 7vw, 100px)",
+          alignItems: "center",
+        }}
+        className="hero-grid"
+      >
+        {/* LEFT — Name + tagline — CSS animated */}
         <div>
-          {/* First name: CSS clip reveal */}
+          {/* First name */}
           <div
             style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
@@ -79,7 +64,7 @@ export default function Hero() {
             }}
           >Onahi</div>
 
-          {/* Last name: CSS clip reveal, slight delay */}
+          {/* Last name */}
           <div
             style={{
               fontFamily: "var(--font-serif)", fontWeight: 300, fontStyle: "italic",
@@ -91,7 +76,7 @@ export default function Hero() {
             }}
           >Ijeh.</div>
 
-          {/* Subtext: CSS fade up */}
+          {/* Subtext */}
           <div
             style={{
               marginTop: "clamp(22px, 3.5vw, 40px)",
@@ -116,54 +101,66 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Headshot / diary photo — CSS fade, GSAP only for float */}
+        {/* RIGHT — Headshot / Polaroid — prominent, right-aligned */}
         <div
           ref={photoRef}
           className="hero-photo-wrap"
           style={{
             flexShrink: 0,
-            transform: "rotate(3deg)",
+            transform: "rotate(2deg)",
             animation: "fadeIn 1.1s cubic-bezier(0.22,1,0.36,1) 0.9s both",
           }}
         >
-          <div className="photo-frame" style={{
-            width: "clamp(140px, 18vw, 240px)",
-            height: "clamp(190px, 24vw, 320px)",
-            borderRadius: "3px",
-            position: "relative",
-          }}>
+          <div
+            className="photo-frame"
+            style={{
+              width: "clamp(200px, 22vw, 320px)",
+              height: "clamp(270px, 30vw, 430px)",
+              borderRadius: "3px",
+              position: "relative",
+            }}
+          >
+            {/* Placeholder content — replace with <Image> when photo is available */}
             <div style={{
-              width: "100%", height: "100%",
+              width: "100%", height: "86%",
               background: "linear-gradient(165deg, #c9c5b8 0%, #b5b2a3 50%, #a8a496 100%)",
               display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", gap: "10px",
+              alignItems: "center", justifyContent: "center", gap: "12px",
             }}>
-              <svg width="44" height="54" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.3 }}>
+              <svg width="52" height="64" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.28 }}>
                 <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.6)" />
                 <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.6)" strokeWidth="1.5" fill="none" />
               </svg>
               <span style={{
-                fontFamily: "var(--font-sans)", fontSize: "9px",
+                fontFamily: "var(--font-sans)", fontSize: "10px",
                 letterSpacing: "0.14em", textTransform: "uppercase",
-                color: "rgba(28,28,26,0.3)",
+                color: "rgba(28,28,26,0.28)",
               }}>Headshot</span>
             </div>
 
+            {/* Polaroid caption strip */}
             <div style={{
-              position: "absolute", bottom: -10, left: "50%",
-              transform: "translateX(-50%) rotate(-2deg)",
-              background: "var(--cream)",
-              padding: "3px 10px",
-              fontFamily: "var(--font-serif)", fontStyle: "italic",
-              fontSize: "11px", color: "rgba(28,28,26,0.55)",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-              whiteSpace: "nowrap",
-            }}>Onahi ✦</div>
+              height: "14%",
+              background: "rgba(255,255,255,0.75)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{
+                fontFamily: "var(--font-serif)", fontStyle: "italic",
+                fontSize: "13px", color: "rgba(28,28,26,0.45)",
+              }}>Onahi ✦</span>
+            </div>
+
+            {/* Pin effect */}
+            <div style={{
+              position: "absolute", top: "-10px", left: "50%",
+              transform: "translateX(-50%)",
+              width: "14px", height: "14px", borderRadius: "50%",
+              background: "var(--sage-deep)",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+            }} />
           </div>
         </div>
       </div>
-
-      <FloatingBall />
 
       {/* Scroll indicator */}
       <div

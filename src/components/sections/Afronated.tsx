@@ -39,15 +39,19 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/* Floating diary photo — CSS animated */}
+      {/*
+        Polaroid moved to BOTTOM-RIGHT corner of the section.
+        This keeps it compositionally balanced but does NOT overlap
+        the "The Collective" / title text in the top-left area.
+      */}
       <div
         ref={photoRef}
         style={{
           position: "absolute",
-          top: "clamp(40px, 6vw, 80px)",
-          left: "clamp(16px, 3vw, 48px)",
+          bottom: "clamp(32px, 5vw, 64px)",
+          right: "clamp(32px, 5vw, 72px)",
           zIndex: 5,
-          transform: "rotate(-5deg)",
+          transform: "rotate(4deg)",
           animation: "fadeIn 1s ease 0.2s both",
         }}
       >
@@ -80,7 +84,7 @@ export default function Afronated() {
           alignItems: "center",
         }} className="afrn-grid">
 
-          {/* Left — CSS animated */}
+          {/* Left — label + title + body + CTA */}
           <div>
             <span style={{
               display: "block",
@@ -125,7 +129,7 @@ export default function Afronated() {
             </a>
           </div>
 
-          {/* Right — spinning ring + photo — CSS animated */}
+          {/* Right — spinning ring + photo placeholder */}
           <div style={{
             display: "flex", justifyContent: "center", alignItems: "center",
             position: "relative",
@@ -167,7 +171,7 @@ export default function Afronated() {
           </div>
         </div>
 
-        {/* Feature cards — CSS animated with stagger */}
+        {/* Feature cards */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))",
