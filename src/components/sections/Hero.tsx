@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import { gsap } from "@/lib/gsap";
 import FloatingBall from "@/components/layout/FloatingBall";
 
 export default function Hero() {
@@ -68,7 +68,7 @@ export default function Hero() {
         padding: "120px var(--container-pad) 140px",
       }}
     >
-      {/* Organic textured circle behind the name */}
+      {/* Organic textured circle */}
       <div style={{
         position: "absolute",
         top: "50%", left: "50%",
@@ -93,13 +93,7 @@ export default function Hero() {
         gridTemplateColumns: "1fr auto",
         gap: "clamp(24px, 4vw, 56px)",
         alignItems: "center",
-      }}>
-        <style>{`
-          @media (max-width: 768px) {
-            .hero-grid-inner { grid-template-columns: 1fr !important; }
-            .hero-photo-wrap { display: none !important; }
-          }
-        `}</style>
+      }} className="hero-grid">
 
         {/* LEFT — Name + quote */}
         <div>
@@ -167,6 +161,7 @@ export default function Hero() {
                 color: "rgba(28,28,26,0.3)",
               }}>Headshot</span>
             </div>
+
             <div style={{
               position: "absolute", bottom: -10, left: "50%",
               transform: "translateX(-50%) rotate(-2deg)",
@@ -200,6 +195,13 @@ export default function Hero() {
           background: "linear-gradient(to bottom, var(--charcoal), transparent)",
         }} />
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-photo-wrap { display: none !important; }
+        }
+      `}</style>
     </section>
   );
 }

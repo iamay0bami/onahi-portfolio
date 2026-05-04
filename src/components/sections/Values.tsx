@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const VALUES = [
   { icon: "◎", title: "Culture is the foundation",       desc: "Everything starts from culture — it shapes how we see, what we build, and who we build it for." },
@@ -19,32 +17,40 @@ export default function Values() {
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
-      if (words) {
-        gsap.fromTo(words,
-          { y: 18, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.65, ease: "power2.out", stagger: 0.035,
-            scrollTrigger: { trigger: quoteRef.current, start: "top 82%" } }
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
+        if (words) {
+          gsap.fromTo(words,
+            { y: 18, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.65, ease: "power2.out", stagger: 0.035,
+              scrollTrigger: { trigger: quoteRef.current, start: "top 82%", once: true } }
+          );
+        }
+        gsap.utils.toArray<HTMLElement>(".val-reveal").forEach((el, i) => {
+          gsap.fromTo(el,
+            { y: 36, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.1,
+              scrollTrigger: { trigger: el, start: "top 90%", once: true } }
+          );
+        });
+
+        gsap.fromTo(photoRef.current,
+          { x: -40, rotate: -10, opacity: 0 },
+          { x: 0, rotate: -7, opacity: 1, duration: 1.1, ease: "power3.out",
+            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
         );
-      }
-      gsap.utils.toArray<HTMLElement>(".val-reveal").forEach((el, i) => {
-        gsap.fromTo(el,
-          { y: 36, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.1,
-            scrollTrigger: { trigger: el, start: "top 90%" } }
-        );
-      });
-      gsap.fromTo(photoRef.current,
-        { x: -40, rotate: -10, opacity: 0 },
-        { x: 0, rotate: -7, opacity: 1, duration: 1.1, ease: "power3.out",
-          scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
-      );
-      gsap.to(photoRef.current, {
-        y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+        gsap.to(photoRef.current, {
+          y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
+        });
+
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -59,13 +65,6 @@ export default function Values() {
         overflow: "hidden",
       }}
     >
-      <style>{`
-        @media (max-width: 768px) {
-          .val-header { grid-template-columns: 1fr !important; }
-          .val-cards  { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
       {/* Decorative large faint circle */}
       <div aria-hidden style={{
         position: "absolute", left: "-8%", bottom: "-15%",
@@ -75,7 +74,7 @@ export default function Values() {
         pointerEvents: "none",
       }} />
 
-      {/* Diary photo — bottom left */}
+      {/* Diary photo */}
       <div
         ref={photoRef}
         style={{
@@ -109,16 +108,13 @@ export default function Values() {
 
       <div className="wrap">
         {/* Header row */}
-        <div
-          className="val-header"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "auto 1fr",
-            gap: "clamp(32px,6vw,80px)",
-            alignItems: "start",
-            marginBottom: "clamp(56px,8vw,96px)",
-          }}
-        >
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "auto 1fr",
+          gap: "clamp(32px,6vw,80px)",
+          alignItems: "start",
+          marginBottom: "clamp(56px,8vw,96px)",
+        }} className="val-header">
           <div className="val-reveal">
             <span style={{
               display: "block",
@@ -153,14 +149,11 @@ export default function Values() {
         </div>
 
         {/* Value cards 2×2 */}
-        <div
-          className="val-cards"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2,1fr)",
-            gap: "clamp(10px,1.6vw,18px)",
-          }}
-        >
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          gap: "clamp(10px,1.6vw,18px)",
+        }} className="val-cards">
           {VALUES.map((v, i) => (
             <div key={i} className="val-card val-reveal" style={{ alignItems: "flex-start" }}>
               <div style={{
@@ -194,6 +187,13 @@ export default function Values() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .val-header { grid-template-columns: 1fr !important; }
+          .val-cards  { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  /* Palette — warm sage/cream like the reference, adapted for Onahi */
+  /* Palette */
   --sage:       #B8BFA8;
   --sage-dark:  #9DA894;
   --sage-deep:  #6B7560;
@@ -20,11 +20,9 @@
   --rose:       #C4957A;
   --rose-soft:  #D4B0A0;
 
-  /* Typography */
   --font-serif: 'Cormorant Garamond', 'Georgia', serif;
   --font-sans:  'Jost', system-ui, sans-serif;
 
-  /* Pinstripe background — THE key texture from the reference site */
   --pinstripe: repeating-linear-gradient(
     90deg,
     transparent,
@@ -61,7 +59,7 @@ html.lenis, html.lenis body { height: auto; }
 ::-webkit-scrollbar-thumb { background: var(--sage-deep); border-radius: 2px; }
 ::selection { background: var(--charcoal); color: var(--cream); }
 
-/* ─── PINSTRIPE OVERLAY — applied to most sections ─── */
+/* ─── PINSTRIPE OVERLAY ─── */
 .pinstripe::before {
   content: '';
   position: absolute;
@@ -124,7 +122,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .contact-pill:hover { background: var(--charcoal); transform: translateY(-1px); }
 
-/* ─── ROLE BADGE (top-left) ─── */
+/* ─── ROLE BADGE ─── */
 .role-badge {
   display: flex;
   align-items: center;
@@ -157,19 +155,6 @@ html.lenis, html.lenis body { height: auto; }
 @keyframes spin-ccw { to { transform: rotate(-360deg); } }
 .spin-cw  { animation: spin-cw  20s linear infinite; }
 .spin-ccw { animation: spin-ccw 24s linear infinite; }
-
-/* ─── FLOATING BALL ─── */
-#floating-ball {
-  position: fixed;
-  width: clamp(36px, 4vw, 56px);
-  height: clamp(36px, 4vw, 56px);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--sage), var(--sage-deep));
-  box-shadow: inset -4px -4px 8px rgba(0,0,0,0.15), inset 2px 2px 6px rgba(255,255,255,0.2);
-  pointer-events: none;
-  z-index: 50;
-  will-change: transform;
-}
 
 /* ─── HERO TYPOGRAPHY ─── */
 .hero-name {
@@ -252,7 +237,7 @@ html.lenis, html.lenis body { height: auto; }
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
-/* ─── PHOTO FRAMES (diary style) ─── */
+/* ─── PHOTO FRAMES ─── */
 .photo-frame {
   background: var(--cream-warm);
   border: 8px solid var(--off-white);
@@ -326,6 +311,16 @@ html.lenis, html.lenis body { height: auto; }
   opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23g)'/%3E%3C/svg%3E");
   background-repeat: repeat;
+}
+
+/* ─── GSAP ANIMATION SAFETY NET ─────────────────────────────────────
+   Ensures elements are VISIBLE by default.
+   GSAP will override these when it's ready.
+   Without this, if ScrollTrigger fails to fire, content stays invisible.
+─────────────────────────────────────────────────────────────────── */
+.gsap-reveal {
+  opacity: 1;
+  transform: none;
 }
 
 /* ─── RESPONSIVE ─── */

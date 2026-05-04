@@ -1,32 +1,38 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function Afronated() {
   const sectionRef = useRef<HTMLElement>(null);
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".afrn-reveal").forEach((el, i) => {
-        gsap.fromTo(el,
-          { y: 44, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", delay: i * 0.1,
-            scrollTrigger: { trigger: el, start: "top 84%" } }
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>(".afrn-reveal").forEach((el, i) => {
+          gsap.fromTo(el,
+            { y: 44, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", delay: i * 0.1,
+              scrollTrigger: { trigger: el, start: "top 84%", once: true } }
+          );
+        });
+
+        gsap.fromTo(photoRef.current,
+          { x: -50, rotate: -8, opacity: 0 },
+          { x: 0, rotate: -5, opacity: 1, duration: 1.2, ease: "power3.out",
+            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
         );
-      });
-      gsap.fromTo(photoRef.current,
-        { x: -50, rotate: -8, opacity: 0 },
-        { x: 0, rotate: -5, opacity: 1, duration: 1.2, ease: "power3.out",
-          scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
-      );
-      gsap.to(photoRef.current, {
-        rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+        gsap.to(photoRef.current, {
+          rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
+        });
+
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -41,12 +47,6 @@ export default function Afronated() {
         overflow: "hidden",
       }}
     >
-      <style>{`
-        @media (max-width: 768px) {
-          .afrn-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
       {/* Large faint watermark text */}
       <div aria-hidden style={{
         position: "absolute", right: "-2%", bottom: "-4%",
@@ -57,7 +57,7 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/* Floating diary photo — top left */}
+      {/* Floating diary photo */}
       <div
         ref={photoRef}
         style={{
@@ -90,15 +90,13 @@ export default function Afronated() {
       </div>
 
       <div className="wrap">
-        <div
-          className="afrn-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(40px, 8vw, 96px)",
-            alignItems: "center",
-          }}
-        >
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "clamp(40px, 8vw, 96px)",
+          alignItems: "center",
+        }} className="afrn-grid">
+
           {/* Left */}
           <div>
             <span className="afrn-reveal" style={{
@@ -137,7 +135,7 @@ export default function Afronated() {
             </a>
           </div>
 
-          {/* Right — spinning ring + photo placeholder */}
+          {/* Right — spinning ring + photo */}
           <div className="afrn-reveal" style={{
             display: "flex", justifyContent: "center", alignItems: "center",
             position: "relative",
@@ -208,6 +206,12 @@ export default function Afronated() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .afrn-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

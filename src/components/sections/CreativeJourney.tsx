@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const SKILLS = [
   { category: "Creative",    items: ["Brand Identity", "Creative Direction", "Art Direction", "Mood Boarding", "Storyboarding", "Visual Curation"] },
@@ -12,10 +10,10 @@ const SKILLS = [
 ];
 
 const HIGHLIGHTS = [
-  { year: "2021 – Now", title: "Founder, Afronated",     desc: "Built a creative media collective from zero — growing a community, producing original content, and running a full editorial operation." },
-  { year: "2023",       title: "Creative Direction Lead", desc: "Led creative output for campaigns reaching thousands across West Africa and the diaspora, developing brand voice and visual language." },
-  { year: "2024",       title: "Cultural Curation",       desc: "Curated a spotlight series on emerging African artists, handling end-to-end production from ideation to publication." },
-  { year: "Ongoing",    title: "Open to Opportunities",   desc: "Available for creative direction, brand consulting, curation roles, and media collaborations. Let's build something meaningful." },
+  { year: "2021 – Now", title: "Founder, Afronated",      desc: "Built a creative media collective from zero — growing a community, producing original content, and running a full editorial operation." },
+  { year: "2023",       title: "Creative Direction Lead",  desc: "Led creative output for campaigns reaching thousands across West Africa and the diaspora, developing brand voice and visual language." },
+  { year: "2024",       title: "Cultural Curation",        desc: "Curated a spotlight series on emerging African artists, handling end-to-end production from ideation to publication." },
+  { year: "Ongoing",    title: "Open to Opportunities",    desc: "Available for creative direction, brand consulting, curation roles, and media collaborations. Let's build something meaningful." },
 ];
 
 export default function CreativeJourney() {
@@ -23,24 +21,32 @@ export default function CreativeJourney() {
   const photoRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".journey-reveal").forEach((el, i) => {
-        gsap.fromTo(el,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.07,
-            scrollTrigger: { trigger: el, start: "top 90%" } }
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>(".journey-reveal").forEach((el, i) => {
+          gsap.fromTo(el,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.07,
+              scrollTrigger: { trigger: el, start: "top 90%", once: true } }
+          );
+        });
+
+        gsap.fromTo(photoRef.current,
+          { x: 60, rotate: 7, opacity: 0 },
+          { x: 0, rotate: 5, opacity: 1, duration: 1.2, ease: "power3.out",
+            scrollTrigger: { trigger: photoRef.current, start: "top 88%", once: true } }
         );
-      });
-      gsap.fromTo(photoRef.current,
-        { x: 60, rotate: 7, opacity: 0 },
-        { x: 0, rotate: 5, opacity: 1, duration: 1.2, ease: "power3.out",
-          scrollTrigger: { trigger: photoRef.current, start: "top 88%" } }
-      );
-      gsap.to(photoRef.current, {
-        y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.8,
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+        gsap.to(photoRef.current, {
+          y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.8,
+        });
+
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -88,6 +94,7 @@ export default function CreativeJourney() {
       </div>
 
       <div className="wrap">
+
         {/* Section header */}
         <div className="journey-reveal" style={{ marginBottom: "clamp(48px,7vw,88px)" }}>
           <span style={{

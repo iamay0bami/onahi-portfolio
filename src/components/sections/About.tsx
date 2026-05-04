@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -14,42 +12,52 @@ export default function About() {
   const circleRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(hlRef.current,
-        { y: 55, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "power3.out",
-          scrollTrigger: { trigger: hlRef.current, start: "top 82%" } }
-      );
-      gsap.fromTo(bioRef.current,
-        { y: 35, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
-          scrollTrigger: { trigger: bioRef.current, start: "top 82%" } }
-      );
-      gsap.fromTo(img1Ref.current,
-        { y: 60, opacity: 0, rotate: -5 },
-        { y: 0, opacity: 1, rotate: -4, duration: 1.1, ease: "power3.out",
-          scrollTrigger: { trigger: img1Ref.current, start: "top 85%" } }
-      );
-      gsap.fromTo(img2Ref.current,
-        { y: 80, opacity: 0, rotate: 3 },
-        { y: 0, opacity: 1, rotate: 5, duration: 1.1, ease: "power3.out", delay: 0.12,
-          scrollTrigger: { trigger: img2Ref.current, start: "top 85%" } }
-      );
-      gsap.fromTo(img3Ref.current,
-        { y: -30, x: 30, opacity: 0, rotate: -8 },
-        { y: 0, x: 0, opacity: 1, rotate: -6, duration: 1.2, ease: "power3.out", delay: 0.22,
-          scrollTrigger: { trigger: img3Ref.current, start: "top 88%" } }
-      );
-      gsap.fromTo(circleRef.current,
-        { scale: 0.75, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
-          scrollTrigger: { trigger: circleRef.current, start: "top 85%" } }
-      );
-      gsap.to(img3Ref.current, {
-        y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+    // Small delay to ensure Lenis + ScrollTrigger are both ready
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(hlRef.current,
+          { y: 55, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out",
+            scrollTrigger: { trigger: hlRef.current, start: "top 85%", once: true } }
+        );
+        gsap.fromTo(bioRef.current,
+          { y: 35, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power2.out",
+            scrollTrigger: { trigger: bioRef.current, start: "top 85%", once: true } }
+        );
+        gsap.fromTo(img1Ref.current,
+          { y: 60, opacity: 0, rotate: -5 },
+          { y: 0, opacity: 1, rotate: -4, duration: 1.1, ease: "power3.out",
+            scrollTrigger: { trigger: img1Ref.current, start: "top 88%", once: true } }
+        );
+        gsap.fromTo(img2Ref.current,
+          { y: 80, opacity: 0, rotate: 3 },
+          { y: 0, opacity: 1, rotate: 5, duration: 1.1, ease: "power3.out", delay: 0.12,
+            scrollTrigger: { trigger: img2Ref.current, start: "top 88%", once: true } }
+        );
+        gsap.fromTo(img3Ref.current,
+          { y: -30, x: 30, opacity: 0, rotate: -8 },
+          { y: 0, x: 0, opacity: 1, rotate: -6, duration: 1.2, ease: "power3.out", delay: 0.22,
+            scrollTrigger: { trigger: img3Ref.current, start: "top 90%", once: true } }
+        );
+        gsap.fromTo(circleRef.current,
+          { scale: 0.75, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 1.3, ease: "power3.out",
+            scrollTrigger: { trigger: circleRef.current, start: "top 88%", once: true } }
+        );
+
+        // Gentle float on the 3rd photo
+        gsap.to(img3Ref.current, {
+          y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1,
+        });
+
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -64,24 +72,17 @@ export default function About() {
         overflow: "hidden",
       }}
     >
-      <style>{`
-        @media (max-width: 768px) {
-          .about-top { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
       <div className="wrap">
+
         {/* TOP — headline + bio */}
-        <div
-          className="about-top"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(36px, 8vw, 96px)",
-            alignItems: "start",
-            marginBottom: "clamp(64px, 10vw, 120px)",
-          }}
-        >
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "clamp(36px, 8vw, 96px)",
+          alignItems: "start",
+          marginBottom: "clamp(64px, 10vw, 120px)",
+        }} className="about-top">
+
           <div ref={hlRef}>
             <h2 style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
@@ -134,7 +135,8 @@ export default function About() {
           flexWrap: "wrap",
           position: "relative",
         }}>
-          {/* Green soft circle behind the photos */}
+
+          {/* Green soft circle */}
           <div ref={circleRef} style={{
             position: "absolute",
             left: "50%", bottom: "-20px",
@@ -146,7 +148,7 @@ export default function About() {
             zIndex: 0,
           }} aria-hidden="true" />
 
-          {/* Photo 3 — small polaroid floating */}
+          {/* Photo 3 — small polaroid, floats above the group */}
           <div ref={img3Ref} style={{
             position: "absolute",
             top: "-50px",
@@ -239,6 +241,12 @@ export default function About() {
           </text>
         </svg>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .about-top { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

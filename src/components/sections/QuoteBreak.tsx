@@ -1,40 +1,37 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-/**
- * The transitional quote section — the big cream/bowl section
- * from the reference site that appears between hero and about.
- * This is the "At the heart of Design is an opportunity to problem solve" section.
- * Adapted for Onahi.
- */
 export default function QuoteBreak() {
   const sectionRef = useRef<HTMLElement>(null);
   const quoteRef   = useRef<HTMLDivElement>(null);
   const bowlRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Bowl/arc rises from bottom — the signature morphing shape
-      gsap.fromTo(bowlRef.current,
-        { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.3, ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" } }
-      );
-
-      // Quote words stagger in
-      const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
-      if (words) {
-        gsap.fromTo(words,
-          { y: 22, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", stagger: 0.05,
-            scrollTrigger: { trigger: quoteRef.current, start: "top 80%" } }
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(bowlRef.current,
+          { y: 80, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.3, ease: "power3.out",
+            scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true } }
         );
-      }
-    }, sectionRef);
-    return () => ctx.revert();
+
+        const words = quoteRef.current?.querySelectorAll<HTMLSpanElement>(".w");
+        if (words) {
+          gsap.fromTo(words,
+            { y: 22, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.7, ease: "power2.out", stagger: 0.05,
+              scrollTrigger: { trigger: quoteRef.current, start: "top 80%", once: true } }
+          );
+        }
+
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const quote = `I turn creative ideas into visuals that live and breathe online. With a background in music, media, and youth culture — I know what clicks, what resonates, and what doesn't.`;
@@ -76,7 +73,7 @@ export default function QuoteBreak() {
         </p>
       </div>
 
-      {/* THE BOWL / ARC SHAPE — exact reference detail */}
+      {/* THE BOWL / ARC SHAPE */}
       <div ref={bowlRef} style={{
         position: "relative", zIndex: 1,
         marginTop: "clamp(48px, 8vw, 80px)",
@@ -90,7 +87,6 @@ export default function QuoteBreak() {
           position: "relative",
           overflow: "hidden",
         }}>
-          {/* Reflection inside the bowl */}
           <div style={{
             position: "absolute",
             bottom: 0, left: "50%", transform: "translateX(-50%)",

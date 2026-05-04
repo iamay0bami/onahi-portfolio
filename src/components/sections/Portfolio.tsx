@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const PROJECTS = [
   { id: 1, name: "Afronated",        role: "Founder · Creative Direction · Media", year: "2021 – Present", color: "var(--sage-deep)" },
@@ -19,20 +17,25 @@ export default function Portfolio() {
   const [activeId, setActiveId] = useState<number | null>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(titleRef.current,
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.9, ease: "power3.out",
-          scrollTrigger: { trigger: titleRef.current, start: "top 85%" } }
-      );
-      gsap.utils.toArray<HTMLElement>(".project-row").forEach((el, i) => {
-        gsap.fromTo(el,
-          { x: -36, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.09,
-            scrollTrigger: { trigger: el, start: "top 92%" } }
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.fromTo(titleRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: "power3.out",
+            scrollTrigger: { trigger: titleRef.current, start: "top 85%", once: true } }
         );
-      });
-    }, sectionRef);
+        gsap.utils.toArray<HTMLElement>(".project-row").forEach((el, i) => {
+          gsap.fromTo(el,
+            { x: -36, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.75, ease: "power2.out", delay: i * 0.09,
+              scrollTrigger: { trigger: el, start: "top 92%", once: true } }
+          );
+        });
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
 
     // Cursor-following preview
     const onMove = (e: MouseEvent) => {
@@ -45,7 +48,11 @@ export default function Portfolio() {
       gsap.to(previewRef.current, { left: x, top: y, duration: 0.38, ease: "power2.out" });
     };
     window.addEventListener("mousemove", onMove);
-    return () => { ctx.revert(); window.removeEventListener("mousemove", onMove); };
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("mousemove", onMove);
+    };
   }, []);
 
   const active = PROJECTS.find(p => p.id === activeId);
@@ -99,7 +106,6 @@ export default function Portfolio() {
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           gap: "6px", padding: "16px",
         }}>
-          {/* Photo placeholder inside preview */}
           <div style={{
             width: "70%", height: "60%",
             background: "rgba(28,28,26,0.06)",

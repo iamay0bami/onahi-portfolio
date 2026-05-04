@@ -1,31 +1,35 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const SERVICES = [
   { label: "Creative Direction",    desc: "End-to-end creative leadership — from concept through execution across campaigns, brands, and media." },
-  { label: "Curation",              desc: "Selecting, shaping, and presenting stories and art that resonate. Culture-led, community-driven." },
-  { label: "Media & Storytelling",  desc: "Producing editorial content, spotlights, and narratives that amplify African voices." },
-  { label: "Brand Consulting",      desc: "Helping brands discover their cultural identity and communicate it with clarity and intention." },
-  { label: "Workshops",             desc: "Interactive creative sessions for teams, students, and collectives ready to think differently." },
+  { label: "Curation",             desc: "Selecting, shaping, and presenting stories and art that resonate. Culture-led, community-driven." },
+  { label: "Media & Storytelling", desc: "Producing editorial content, spotlights, and narratives that amplify African voices." },
+  { label: "Brand Consulting",     desc: "Helping brands discover their cultural identity and communicate it with clarity and intention." },
+  { label: "Workshops",            desc: "Interactive creative sessions for teams, students, and collectives ready to think differently." },
 ];
 
 export default function WhatIDo() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".what-row").forEach((el, i) => {
-        gsap.fromTo(el,
-          { x: -28, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.08,
-            scrollTrigger: { trigger: el, start: "top 92%" } }
-        );
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>(".what-row").forEach((el, i) => {
+          gsap.fromTo(el,
+            { x: -28, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.7, ease: "power2.out", delay: i * 0.08,
+              scrollTrigger: { trigger: el, start: "top 92%", once: true } }
+          );
+        });
+        ScrollTrigger.refresh();
+      }, sectionRef);
+
+      return () => ctx.revert();
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -40,13 +44,6 @@ export default function WhatIDo() {
         overflow: "hidden",
       }}
     >
-      <style>{`
-        @media (max-width: 768px) {
-          .what-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
-      {/* Big curved arc shape */}
       <div aria-hidden style={{
         position: "absolute",
         top: "50%", left: "50%",
@@ -59,15 +56,13 @@ export default function WhatIDo() {
       }} />
 
       <div className="wrap">
-        <div
-          className="what-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "clamp(40px,8vw,96px)",
-            alignItems: "start",
-          }}
-        >
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "clamp(40px,8vw,96px)",
+          alignItems: "start",
+        }} className="what-grid">
+
           {/* Left — big heading */}
           <div className="what-row">
             <p style={{
@@ -121,6 +116,10 @@ export default function WhatIDo() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) { .what-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </section>
   );
 }
