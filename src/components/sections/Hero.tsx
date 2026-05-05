@@ -5,16 +5,12 @@ import { gsap } from "@/lib/gsap";
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const photoRef   = useRef<HTMLDivElement>(null);
-  const scrollRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only GSAP for continuous float on photo and scroll indicator bob
+      // Only GSAP for continuous float on photo
       gsap.to(photoRef.current, {
         y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
-      });
-      gsap.to(scrollRef.current, {
-        y: 7, duration: 1.6, ease: "sine.inOut", yoyo: true, repeat: -1,
       });
     }, sectionRef);
 
@@ -34,11 +30,9 @@ export default function Hero() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "120px var(--container-pad) 140px",
+        padding: "120px var(--container-pad) 100px",
       }}
     >
-      {/* NO sphere, NO bowl — clean sage background with only pinstripe */}
-
       {/* Main content grid: name left, photo right */}
       <div
         style={{
@@ -101,7 +95,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Headshot / Polaroid — prominent, right-aligned */}
+        {/* RIGHT — Headshot / Polaroid — bold and prominent */}
         <div
           ref={photoRef}
           className="hero-photo-wrap"
@@ -114,9 +108,10 @@ export default function Hero() {
           <div
             className="photo-frame"
             style={{
-              width: "clamp(200px, 22vw, 320px)",
-              height: "clamp(270px, 30vw, 430px)",
-              borderRadius: "3px",
+              // Significantly larger: wider and taller for bold presence
+              width: "clamp(260px, 28vw, 420px)",
+              height: "clamp(340px, 37vw, 555px)",
+              borderRadius: "4px",
               position: "relative",
             }}
           >
@@ -127,12 +122,12 @@ export default function Hero() {
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center", gap: "12px",
             }}>
-              <svg width="52" height="64" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.28 }}>
+              <svg width="62" height="76" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.28 }}>
                 <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.6)" />
                 <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.6)" strokeWidth="1.5" fill="none" />
               </svg>
               <span style={{
-                fontFamily: "var(--font-sans)", fontSize: "10px",
+                fontFamily: "var(--font-sans)", fontSize: "11px",
                 letterSpacing: "0.14em", textTransform: "uppercase",
                 color: "rgba(28,28,26,0.28)",
               }}>Headshot</span>
@@ -146,43 +141,23 @@ export default function Hero() {
             }}>
               <span style={{
                 fontFamily: "var(--font-serif)", fontStyle: "italic",
-                fontSize: "13px", color: "rgba(28,28,26,0.45)",
+                fontSize: "15px", color: "rgba(28,28,26,0.45)",
               }}>Onahi ✦</span>
             </div>
 
             {/* Pin effect */}
             <div style={{
-              position: "absolute", top: "-10px", left: "50%",
+              position: "absolute", top: "-12px", left: "50%",
               transform: "translateX(-50%)",
-              width: "14px", height: "14px", borderRadius: "50%",
+              width: "16px", height: "16px", borderRadius: "50%",
               background: "var(--sage-deep)",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.22)",
             }} />
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div
-        ref={scrollRef}
-        style={{
-          position: "absolute", bottom: "36px", left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
-          zIndex: 5,
-          animation: "fadeIn 0.6s ease 1.4s both",
-        }}
-      >
-        <span style={{
-          fontFamily: "var(--font-sans)", fontSize: "10px",
-          letterSpacing: "0.18em", color: "var(--sage-deep)",
-          textTransform: "uppercase", opacity: 0.7,
-        }}>Scroll</span>
-        <div style={{
-          width: "1px", height: "44px",
-          background: "linear-gradient(to bottom, var(--charcoal), transparent)",
-        }} />
-      </div>
+      {/* Scroll indicator REMOVED */}
 
       <style jsx>{`
         @media (max-width: 768px) {

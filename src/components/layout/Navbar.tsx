@@ -78,80 +78,180 @@ export default function Navbar() {
     setMenuOpen(false);
   };
 
+  // Pill background: a warm parchment/linen tone that reads clearly on sage
+  // and doesn't feel clinical — like aged paper, slightly warm
+  const pillBg = "rgba(242, 237, 228, 0.88)"; // --cream with slight transparency
+  const pillBorder = "rgba(28, 28, 26, 0.10)";
+  const pillShadow = "0 2px 12px rgba(28,28,26,0.10), 0 1px 3px rgba(28,28,26,0.07)";
+
   return (
     <>
       <nav
         ref={navRef}
         style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
-          padding: "18px clamp(20px, 4vw, 56px)",
+          padding: "16px clamp(20px, 4vw, 56px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          // Always fully transparent — no background at any scroll position
           background: "transparent",
           backdropFilter: "none",
         }}
       >
-        {/* Clickable logo/role area — scrolls to top */}
+        {/* ── LEFT: Logo / role badge in a pill ── */}
         <button
           onClick={scrollToTop}
           aria-label="Back to top"
           style={{
-            background: "none", border: "none", cursor: "pointer",
-            display: "flex", alignItems: "center", gap: "10px",
-            padding: "4px 0",
+            background: pillBg,
+            border: `1px solid ${pillBorder}`,
+            borderRadius: "100px",
+            boxShadow: pillShadow,
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "7px 16px 7px 8px",
+            transition: "box-shadow 0.25s ease, transform 0.2s ease",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(28,28,26,0.14), 0 1px 4px rgba(28,28,26,0.10)";
+            (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.boxShadow = pillShadow;
+            (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
           }}
         >
           <div className="logo-circle">
             <span>O</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "1px" }}>
-            <span
-              ref={roleRef}
-              className="role-text"
-              style={{ display: "block", lineHeight: 1.2 }}
-            >
-              {ROLES[roleIdx]}
-            </span>
-          </div>
+          <span
+            ref={roleRef}
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "12px",
+              fontWeight: 300,
+              letterSpacing: "0.07em",
+              color: "var(--charcoal-soft)",
+              display: "block",
+              lineHeight: 1.2,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {ROLES[roleIdx]}
+          </span>
         </button>
 
-        {/* Desktop nav links */}
-        <div className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: "clamp(18px, 2.5vw, 32px)" }}>
-          {["#portfolio","#values","#what"].map((href, i) => (
-            <button key={href} className="nav-link" onClick={() => scrollTo(href)}>
-              {["Portfolio","My Values","What I Do"][i]}
-            </button>
+        {/* ── RIGHT: Nav links + Contact in a single pill ── */}
+        <div
+          className="hide-mobile"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            background: pillBg,
+            border: `1px solid ${pillBorder}`,
+            borderRadius: "100px",
+            boxShadow: pillShadow,
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            padding: "5px 6px 5px 8px",
+            gap: "0",
+          }}
+        >
+          {/* Nav links with subtle dividers between them */}
+          {(["#portfolio", "#values", "#what"] as const).map((href, i) => (
+            <div key={href} style={{ display: "flex", alignItems: "center" }}>
+              {/* Divider between items (not before first) */}
+              {i > 0 && (
+                <div style={{
+                  width: "1px",
+                  height: "14px",
+                  background: "rgba(28,28,26,0.15)",
+                  margin: "0 2px",
+                  flexShrink: 0,
+                }} />
+              )}
+              <button
+                className="nav-link"
+                onClick={() => scrollTo(href)}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: "100px",
+                  fontSize: "13px",
+                  fontWeight: 300,
+                  letterSpacing: "0.05em",
+                  color: "var(--charcoal)",
+                  transition: "background 0.22s ease, color 0.22s ease",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(107,117,96,0.12)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                }}
+              >
+                {["Portfolio", "My Values", "What I Do"][i]}
+              </button>
+            </div>
           ))}
-          <button className="contact-pill" onClick={() => scrollTo("#contact")}>Contact</button>
+
+          {/* Divider before Contact pill */}
+          <div style={{
+            width: "1px",
+            height: "14px",
+            background: "rgba(28,28,26,0.15)",
+            margin: "0 4px 0 2px",
+            flexShrink: 0,
+          }} />
+
+          {/* Contact — filled accent pill inside the container */}
+          <button
+            className="contact-pill"
+            onClick={() => scrollTo("#contact")}
+            style={{ padding: "8px 20px", fontSize: "13px" }}
+          >
+            Contact
+          </button>
         </div>
 
         {/* Mobile hamburger */}
         <button
           className="show-mobile"
           onClick={() => setMenuOpen(v => !v)}
-          style={{ background: "none", border: "none", cursor: "pointer", display: "none", flexDirection: "column", gap: "5px", padding: "4px" }}
+          style={{
+            background: pillBg,
+            border: `1px solid ${pillBorder}`,
+            borderRadius: "10px",
+            boxShadow: pillShadow,
+            cursor: "pointer",
+            display: "none",
+            flexDirection: "column",
+            gap: "5px",
+            padding: "10px 12px",
+          }}
           aria-label="Menu"
         >
-          {[0,1,2].map(i => (
+          {[0, 1, 2].map(i => (
             <span key={i} style={{
               display: "block", width: "22px", height: "1px",
               background: "var(--charcoal)",
               transition: "all 0.3s ease", transformOrigin: "center",
               transform: menuOpen
-                ? i===0 ? "rotate(45deg) translate(4px,4px)"
-                  : i===2 ? "rotate(-45deg) translate(4px,-4px)"
+                ? i === 0 ? "rotate(45deg) translate(4px,4px)"
+                  : i === 2 ? "rotate(-45deg) translate(4px,-4px)"
                   : "scaleX(0)"
                 : "none",
-            }}/>
+            }} />
           ))}
         </button>
       </nav>
 
       {/* Mobile menu */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-        {["#portfolio","#about","#values","#what","#contact"].map((h,i) => (
+        {["#portfolio", "#about", "#values", "#what", "#contact"].map((h, i) => (
           <a key={h} onClick={() => scrollTo(h)} href="#">
-            {["Portfolio","About","My Values","What I Do","Contact"][i]}
+            {["Portfolio", "About", "My Values", "What I Do", "Contact"][i]}
           </a>
         ))}
       </div>

@@ -1,15 +1,73 @@
 "use client";
 import { useState } from "react";
 
-const INQUIRY_TYPES = ["General", "Creative Direction", "Curation", "Collaboration", "Brand Work", "Media"];
+// Each inquiry type carries a label and a pre-fill prompt that gives the
+// user a useful starting point — this is the meaningful function of the buttons.
+const INQUIRY_TYPES: { label: string; placeholder: string; prefill: string }[] = [
+  {
+    label: "General",
+    placeholder: "How may I help you?",
+    prefill: "",
+  },
+  {
+    label: "Creative Direction",
+    placeholder: "Tell me about your project — brand, scope, timeline...",
+    prefill: "Hi Onahi, I'd like to discuss a creative direction project. ",
+  },
+  {
+    label: "Curation",
+    placeholder: "What would you like curated — event, editorial, playlist?",
+    prefill: "Hi Onahi, I'm looking for curation support for ",
+  },
+  {
+    label: "Collaboration",
+    placeholder: "Describe your idea and how you see us working together...",
+    prefill: "Hi Onahi, I have a collaboration idea I'd love to explore with you — ",
+  },
+  {
+    label: "Brand Work",
+    placeholder: "Tell me about your brand and what you're building...",
+    prefill: "Hi Onahi, I need help with brand work for ",
+  },
+  {
+    label: "Media",
+    placeholder: "Pitch your story, campaign or media opportunity...",
+    prefill: "Hi Onahi, I'm reaching out regarding a media opportunity — ",
+  },
+];
 
 export default function Contact() {
-  const [inquiry, setInquiry] = useState("General");
-  const [form, setForm]       = useState({ name: "", email: "", message: "" });
-  const [sent, setSent]       = useState(false);
+  const [inquiryIdx, setInquiryIdx] = useState(0);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
+
+  // When a category is selected:
+  // 1. Update the active category
+  // 2. Pre-fill the message with a context starter (only if message is empty
+  //    or was itself a pre-fill — so we don't wipe something the user typed)
+  const previousPrefills = INQUIRY_TYPES.map(t => t.prefill);
+
+  const handleInquirySelect = (idx: number) => {
+    setInquiryIdx(idx);
+    const newPrefill = INQUIRY_TYPES[idx].prefill;
+    // Replace message only if it's blank or is one of the auto-prefills
+    const isAutoFilled = previousPrefills.includes(form.message);
+    if (form.message === "" || isAutoFilled) {
+      setForm(f => ({ ...f, message: newPrefill }));
+    }
+  };
+
+  const activeType = INQUIRY_TYPES[inquiryIdx];
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!form.name || !form.email) return;
+    // Build a mailto link with subject pre-populated by category
+    const subject = encodeURIComponent(`[${activeType.label}] — Message from ${form.name}`);
+    const body = encodeURIComponent(
+      `${form.message}\n\n---\nFrom: ${form.name}\nEmail: ${form.email}\nCategory: ${activeType.label}`
+    );
+    window.location.href = `mailto:hello@onahiijeh.com?subject=${subject}&body=${body}`;
     setSent(true);
   };
 
@@ -21,7 +79,6 @@ export default function Contact() {
         position: "relative",
         padding: "clamp(80px,12vw,160px) var(--container-pad) clamp(56px,8vw,96px)",
         overflow: "hidden",
-        /* Ensure always fully visible — no opacity tricks */
         opacity: 1,
       }}
     >
@@ -77,25 +134,34 @@ export default function Contact() {
             </p>
           ) : (
             <>
-              {/* Inquiry type pills */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "clamp(24px,3.5vw,44px)" }}>
-                {INQUIRY_TYPES.map(type => (
-                  <button
-                    key={type}
-                    onClick={() => setInquiry(type)}
-                    style={{
-                      fontFamily: "var(--font-sans)", fontSize: "12px",
-                      letterSpacing: "0.04em", padding: "7px 16px",
-                      borderRadius: "100px", border: "1px solid",
-                      borderColor: inquiry === type ? "var(--charcoal)" : "rgba(28,28,26,0.18)",
-                      background: inquiry === type ? "var(--charcoal)" : "transparent",
-                      color: inquiry === type ? "var(--off-white)" : "var(--charcoal)",
-                      cursor: "pointer", transition: "all 0.22s ease",
-                    }}
-                  >
-                    {type}
-                  </button>
-                ))}
+              {/* Inquiry type selector with helper text */}
+              <div style={{ marginBottom: "clamp(24px,3.5vw,44px)" }}>
+                <p style={{
+                  fontFamily: "var(--font-sans)", fontSize: "11px",
+                  letterSpacing: "0.16em", textTransform: "uppercase",
+                  color: "var(--sage-deep)", marginBottom: "10px", fontWeight: 300,
+                }}>
+                  What&apos;s this about?
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {INQUIRY_TYPES.map((type, idx) => (
+                    <button
+                      key={type.label}
+                      onClick={() => handleInquirySelect(idx)}
+                      style={{
+                        fontFamily: "var(--font-sans)", fontSize: "12px",
+                        letterSpacing: "0.04em", padding: "7px 16px",
+                        borderRadius: "100px", border: "1px solid",
+                        borderColor: inquiryIdx === idx ? "var(--charcoal)" : "rgba(28,28,26,0.18)",
+                        background: inquiryIdx === idx ? "var(--charcoal)" : "transparent",
+                        color: inquiryIdx === idx ? "var(--off-white)" : "var(--charcoal)",
+                        cursor: "pointer", transition: "all 0.22s ease",
+                      }}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Name + email row */}
@@ -128,7 +194,8 @@ export default function Contact() {
                 paddingBottom: "13px", marginBottom: "clamp(28px,4vw,44px)",
               }}>
                 <input
-                  type="text" placeholder="How may I help you?"
+                  type="text"
+                  placeholder={activeType.placeholder}
                   value={form.message}
                   onChange={e => setForm({ ...form, message: e.target.value })}
                   style={{
