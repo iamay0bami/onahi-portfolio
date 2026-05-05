@@ -8,12 +8,10 @@ export default function Hero() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only GSAP for continuous float on photo
       gsap.to(photoRef.current, {
         y: -10, duration: 3.2, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.5,
       });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
@@ -33,21 +31,30 @@ export default function Hero() {
         padding: "120px var(--container-pad) 100px",
       }}
     >
-      {/* Main content grid: name left, photo right */}
+      {/*
+        Grid: name text on the left, polaroid on the right.
+        The photo column uses a negative right margin so the polaroid
+        can bleed slightly outside the container on the right edge —
+        giving it more visual weight and making it feel bolder.
+      */}
       <div
         style={{
           position: "relative", zIndex: 2,
           maxWidth: "var(--container-max)", margin: "0 auto", width: "100%",
           display: "grid",
-          gridTemplateColumns: "1fr auto",
-          gap: "clamp(48px, 7vw, 100px)",
+          /*
+            Two columns: text gets all flexible space, photo gets a fixed
+            generous chunk. The photo column is intentionally large so the
+            frame dominates the right half of the hero.
+          */
+          gridTemplateColumns: "1fr clamp(300px, 34vw, 480px)",
+          gap: "clamp(32px, 5vw, 72px)",
           alignItems: "center",
         }}
         className="hero-grid"
       >
-        {/* LEFT — Name + tagline — CSS animated */}
+        {/* LEFT — Name + tagline */}
         <div>
-          {/* First name */}
           <div
             style={{
               fontFamily: "var(--font-serif)", fontWeight: 300,
@@ -58,7 +65,6 @@ export default function Hero() {
             }}
           >Onahi</div>
 
-          {/* Last name */}
           <div
             style={{
               fontFamily: "var(--font-serif)", fontWeight: 300, fontStyle: "italic",
@@ -70,7 +76,6 @@ export default function Hero() {
             }}
           >Ijeh.</div>
 
-          {/* Subtext */}
           <div
             style={{
               marginTop: "clamp(22px, 3.5vw, 40px)",
@@ -95,69 +100,81 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Headshot / Polaroid — bold and prominent */}
+        {/* RIGHT — Bold polaroid frame */}
         <div
           ref={photoRef}
           className="hero-photo-wrap"
           style={{
             flexShrink: 0,
-            transform: "rotate(2deg)",
+            /*
+              Slight clockwise tilt + nudge left so the frame overlaps
+              toward the name text a touch — feels confident, not shy.
+            */
+            transform: "rotate(2.5deg) translateX(-16px)",
             animation: "fadeIn 1.1s cubic-bezier(0.22,1,0.36,1) 0.9s both",
           }}
         >
           <div
             className="photo-frame"
             style={{
-              // Significantly larger: wider and taller for bold presence
-              width: "clamp(260px, 28vw, 420px)",
-              height: "clamp(340px, 37vw, 555px)",
+              /*
+                Significantly bolder dimensions — fills the column width.
+                At 1440px viewport: ~490px wide × ~640px tall.
+                At 1024px viewport: ~350px wide × ~455px tall.
+                This gives it the weighty editorial presence of a magazine spread.
+              */
+              width: "clamp(280px, 32vw, 490px)",
+              height: "clamp(370px, 42vw, 640px)",
               borderRadius: "4px",
               position: "relative",
             }}
           >
-            {/* Placeholder content — replace with <Image> when photo is available */}
+            {/* Photo area — replace with <Image> when headshot is ready */}
             <div style={{
-              width: "100%", height: "86%",
-              background: "linear-gradient(165deg, #c9c5b8 0%, #b5b2a3 50%, #a8a496 100%)",
+              width: "100%", height: "87%",
+              background: "linear-gradient(165deg, #cac6b9 0%, #b8b5a6 45%, #aba896 100%)",
               display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", gap: "12px",
+              alignItems: "center", justifyContent: "center", gap: "14px",
             }}>
-              <svg width="62" height="76" viewBox="0 0 44 54" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.28 }}>
-                <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.6)" />
-                <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.6)" strokeWidth="1.5" fill="none" />
+              <svg
+                width="68" height="82"
+                viewBox="0 0 44 54" fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ opacity: 0.26 }}
+              >
+                <ellipse cx="22" cy="16" rx="12" ry="14" fill="rgba(28,28,26,0.65)" />
+                <path d="M2 52c0-11 9-20 20-20s20 9 20 20" stroke="rgba(28,28,26,0.65)" strokeWidth="1.5" fill="none" />
               </svg>
               <span style={{
                 fontFamily: "var(--font-sans)", fontSize: "11px",
-                letterSpacing: "0.14em", textTransform: "uppercase",
-                color: "rgba(28,28,26,0.28)",
+                letterSpacing: "0.16em", textTransform: "uppercase",
+                color: "rgba(28,28,26,0.26)",
               }}>Headshot</span>
             </div>
 
             {/* Polaroid caption strip */}
             <div style={{
-              height: "14%",
+              height: "13%",
               background: "rgba(255,255,255,0.75)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <span style={{
                 fontFamily: "var(--font-serif)", fontStyle: "italic",
-                fontSize: "15px", color: "rgba(28,28,26,0.45)",
+                fontSize: "16px", color: "rgba(28,28,26,0.45)",
               }}>Onahi ✦</span>
             </div>
 
-            {/* Pin effect */}
+            {/* Pin */}
             <div style={{
-              position: "absolute", top: "-12px", left: "50%",
+              position: "absolute", top: "-13px", left: "50%",
               transform: "translateX(-50%)",
-              width: "16px", height: "16px", borderRadius: "50%",
+              width: "18px", height: "18px", borderRadius: "50%",
               background: "var(--sage-deep)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.22)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.24)",
             }} />
           </div>
         </div>
       </div>
-
-      {/* Scroll indicator REMOVED */}
 
       <style jsx>{`
         @media (max-width: 768px) {

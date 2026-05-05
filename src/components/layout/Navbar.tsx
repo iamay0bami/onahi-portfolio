@@ -5,23 +5,83 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 const ROLES = ["Creative Director", "Curator", "Founder", "Media Maker"];
 
 export default function Navbar() {
-  const [roleIdx, setRoleIdx] = useState(0);
+  // roleIdx is only the logical index — animation is driven entirely by GSAP refs
+  const roleIdxRef  = useRef(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const roleRef = useRef<HTMLSpanElement>(null);
-  const navRef = useRef<HTMLElement>(null);
-  const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Auto-cycle roles every 2.5 seconds
-  const startCycle = useCallback(() => {
-    cycleRef.current = setInterval(() => {
-      setRoleIdx(prev => (prev + 1) % ROLES.length);
-    }, 2500);
+  // Two DOM nodes for the ticker — always mounted, GSAP owns their y/opacity
+  const topRef    = useRef<HTMLSpanElement>(null); // currently visible
+  const bottomRef = useRef<HTMLSpanElement>(null); // waiting below, slides up
+
+  const navRef   = useRef<HTMLElement>(null);
+  const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const busyRef  = useRef(false); // prevent overlapping tweens
+
+  // ── Animate to a new role index ──
+  const animateTo = useCallback((nextIdx: number) => {
+    if (busyRef.current) return;
+    if (nextIdx === roleIdxRef.current) return;
+    busyRef.current = true;
+
+    const top    = topRef.current;
+    const bottom = bottomRef.current;
+    if (!top || !bottom) { busyRef.current = false; return; }
+
+    // Write incoming text into the hidden bottom span
+    bottom.textContent = ROLES[nextIdx];
+
+    // Make sure bottom starts from below
+    gsap.set(bottom, { y: 14, opacity: 0 });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Snap: top now owns the new text, bottom resets below
+        top.textContent = ROLES[nextIdx];
+        gsap.set(top,    { y: 0,  opacity: 1 });
+        gsap.set(bottom, { y: 14, opacity: 0 });
+        roleIdxRef.current = nextIdx;
+        busyRef.current = false;
+      },
+    });
+
+    // Outgoing (top) slides up and fades out
+    tl.to(top, {
+      y: -14,
+      opacity: 0,
+      duration: 0.42,
+      ease: "power2.in",
+    });
+
+    // Incoming (bottom) slides up into place — slight overlap for continuity
+    tl.to(bottom, {
+      y: 0,
+      opacity: 1,
+      duration: 0.46,
+      ease: "power2.out",
+    }, "-=0.18");
   }, []);
 
+  const startCycle = useCallback(() => {
+    if (cycleRef.current) clearInterval(cycleRef.current);
+    cycleRef.current = setInterval(() => {
+      animateTo((roleIdxRef.current + 1) % ROLES.length);
+    }, 2800);
+  }, [animateTo]);
+
   useEffect(() => {
+    // Seed the spans on mount
+    if (topRef.current) {
+      topRef.current.textContent = ROLES[0];
+      gsap.set(topRef.current, { y: 0, opacity: 1 });
+    }
+    if (bottomRef.current) {
+      bottomRef.current.textContent = ROLES[1];
+      gsap.set(bottomRef.current, { y: 14, opacity: 0 });
+    }
+
     startCycle();
 
-    // Scroll-based role update (for section context)
+    // Scroll-context triggers
     const timer = setTimeout(() => {
       const triggers = [
         { id: "#hero",      idx: 0 },
@@ -34,21 +94,14 @@ export default function Navbar() {
         if (!el) return;
         ScrollTrigger.create({
           trigger: el, start: "top 55%",
-          onEnter:     () => {
-            if (cycleRef.current) clearInterval(cycleRef.current);
-            setRoleIdx(idx);
-            startCycle();
-          },
-          onEnterBack: () => {
-            if (cycleRef.current) clearInterval(cycleRef.current);
-            setRoleIdx(Math.max(0, idx - 1));
-            startCycle();
-          },
+          onEnter:     () => { if (cycleRef.current) clearInterval(cycleRef.current); animateTo(idx); startCycle(); },
+          onEnterBack: () => { if (cycleRef.current) clearInterval(cycleRef.current); animateTo(Math.max(0, idx - 1)); startCycle(); },
         });
       });
       ScrollTrigger.refresh();
     }, 400);
 
+    // Nav entrance animation
     gsap.fromTo(navRef.current,
       { y: -20, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.9, delay: 0.5, ease: "power2.out" }
@@ -58,34 +111,50 @@ export default function Navbar() {
       clearTimeout(timer);
       if (cycleRef.current) clearInterval(cycleRef.current);
     };
-  }, [startCycle]);
-
-  useEffect(() => {
-    if (!roleRef.current) return;
-    gsap.fromTo(roleRef.current,
-      { opacity: 0, y: 5 },
-      { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
-    );
-  }, [roleIdx]);
+  }, [animateTo, startCycle]);
 
   const scrollTo = (id: string) => {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setMenuOpen(false);
   };
 
-  // Pill background: a warm parchment/linen tone that reads clearly on sage
-  // and doesn't feel clinical — like aged paper, slightly warm
-  const pillBg = "rgba(242, 237, 228, 0.88)"; // --cream with slight transparency
+  const pillBg     = "rgba(242, 237, 228, 0.88)";
   const pillBorder = "rgba(28, 28, 26, 0.10)";
   const pillShadow = "0 2px 12px rgba(28,28,26,0.10), 0 1px 3px rgba(28,28,26,0.07)";
 
   return (
     <>
+      <style>{`
+        /* Ticker: clipping window + two stacked absolutely-positioned spans */
+        .role-ticker {
+          position: relative;
+          overflow: hidden;
+          height: 15px;
+          /* Wide enough for the longest role "Creative Director" + tracking */
+          min-width: 120px;
+          flex-shrink: 0;
+        }
+        .ticker-span {
+          position: absolute;
+          left: 0;
+          top: 0;
+          line-height: 15px;
+          white-space: nowrap;
+          font-family: var(--font-sans);
+          font-size: 12px;
+          font-weight: 300;
+          letter-spacing: 0.07em;
+          color: var(--charcoal-soft);
+          will-change: transform, opacity;
+          pointer-events: none;
+          user-select: none;
+        }
+      `}</style>
+
       <nav
         ref={navRef}
         style={{
@@ -93,10 +162,9 @@ export default function Navbar() {
           padding: "16px clamp(20px, 4vw, 56px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           background: "transparent",
-          backdropFilter: "none",
         }}
       >
-        {/* ── LEFT: Logo / role badge in a pill ── */}
+        {/* ── LEFT: Logo + role ticker in a pill ── */}
         <button
           onClick={scrollToTop}
           aria-label="Back to top"
@@ -115,7 +183,8 @@ export default function Navbar() {
             transition: "box-shadow 0.25s ease, transform 0.2s ease",
           }}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(28,28,26,0.14), 0 1px 4px rgba(28,28,26,0.10)";
+            (e.currentTarget as HTMLElement).style.boxShadow =
+              "0 4px 18px rgba(28,28,26,0.14), 0 1px 4px rgba(28,28,26,0.10)";
             (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
           }}
           onMouseLeave={e => {
@@ -126,21 +195,17 @@ export default function Navbar() {
           <div className="logo-circle">
             <span>O</span>
           </div>
-          <span
-            ref={roleRef}
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "12px",
-              fontWeight: 300,
-              letterSpacing: "0.07em",
-              color: "var(--charcoal-soft)",
-              display: "block",
-              lineHeight: 1.2,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {ROLES[roleIdx]}
-          </span>
+
+          {/*
+            Two spans, always in the DOM.
+            GSAP animates y + opacity directly on the DOM nodes —
+            React never re-renders these after mount, so there's
+            no state-driven flicker or mid-animation reset.
+          */}
+          <div className="role-ticker">
+            <span ref={topRef}    className="ticker-span" />
+            <span ref={bottomRef} className="ticker-span" />
+          </div>
         </button>
 
         {/* ── RIGHT: Nav links + Contact in a single pill ── */}
@@ -159,53 +224,38 @@ export default function Navbar() {
             gap: "0",
           }}
         >
-          {/* Nav links with subtle dividers between them */}
           {(["#portfolio", "#values", "#what"] as const).map((href, i) => (
             <div key={href} style={{ display: "flex", alignItems: "center" }}>
-              {/* Divider between items (not before first) */}
               {i > 0 && (
                 <div style={{
-                  width: "1px",
-                  height: "14px",
+                  width: "1px", height: "14px",
                   background: "rgba(28,28,26,0.15)",
-                  margin: "0 2px",
-                  flexShrink: 0,
+                  margin: "0 2px", flexShrink: 0,
                 }} />
               )}
               <button
                 className="nav-link"
                 onClick={() => scrollTo(href)}
                 style={{
-                  padding: "6px 14px",
-                  borderRadius: "100px",
-                  fontSize: "13px",
-                  fontWeight: 300,
-                  letterSpacing: "0.05em",
+                  padding: "6px 14px", borderRadius: "100px",
+                  fontSize: "13px", fontWeight: 300, letterSpacing: "0.05em",
                   color: "var(--charcoal)",
-                  transition: "background 0.22s ease, color 0.22s ease",
+                  transition: "background 0.22s ease",
                 }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(107,117,96,0.12)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
-                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(107,117,96,0.12)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
               >
                 {["Portfolio", "My Values", "What I Do"][i]}
               </button>
             </div>
           ))}
 
-          {/* Divider before Contact pill */}
           <div style={{
-            width: "1px",
-            height: "14px",
+            width: "1px", height: "14px",
             background: "rgba(28,28,26,0.15)",
-            margin: "0 4px 0 2px",
-            flexShrink: 0,
+            margin: "0 4px 0 2px", flexShrink: 0,
           }} />
 
-          {/* Contact — filled accent pill inside the container */}
           <button
             className="contact-pill"
             onClick={() => scrollTo("#contact")}
