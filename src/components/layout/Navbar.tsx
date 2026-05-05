@@ -10,7 +10,6 @@ export default function Navbar() {
 
   const topRef    = useRef<HTMLSpanElement>(null);
   const bottomRef = useRef<HTMLSpanElement>(null);
-  // Ref to the pill wrapper so we can animate its width
   const tickerPillRef = useRef<HTMLDivElement>(null);
 
   const navRef   = useRef<HTMLElement>(null);
@@ -18,12 +17,16 @@ export default function Navbar() {
   const busyRef  = useRef(false);
 
   // Measure text width using a hidden canvas for pixel-perfect sizing
+  // We add generous padding so text never clips
   const measureText = useCallback((text: string): number => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    if (!ctx) return 120;
+    if (!ctx) return 140;
+    // Match the actual rendered font as closely as possible
     ctx.font = "300 12px 'Jost', system-ui, sans-serif";
-    return Math.ceil(ctx.measureText(text).width);
+    const measured = Math.ceil(ctx.measureText(text).width);
+    // Add 10px safety buffer on each side to prevent any clipping
+    return measured + 20;
   }, []);
 
   const animateTo = useCallback((nextIdx: number) => {
@@ -40,9 +43,9 @@ export default function Navbar() {
 
     gsap.set(bottom, { y: 14, opacity: 0 });
 
-    // Animate pill width to fit new text
+    // Animate pill width to fit new text + padding buffer
     if (pill) {
-      const newWidth = measureText(ROLES[nextIdx]) + 2; // +2px safety
+      const newWidth = measureText(ROLES[nextIdx]);
       gsap.to(pill, { width: newWidth, duration: 0.45, ease: "power2.inOut" });
     }
 
@@ -77,9 +80,9 @@ export default function Navbar() {
       bottomRef.current.textContent = ROLES[1];
       gsap.set(bottomRef.current, { y: 14, opacity: 0 });
     }
-    // Set initial pill width to match first role
+    // Set initial pill width — use measureText which includes padding buffer
     if (tickerPillRef.current) {
-      tickerPillRef.current.style.width = `${measureText(ROLES[0]) + 2}px`;
+      tickerPillRef.current.style.width = `${measureText(ROLES[0])}px`;
     }
 
     startCycle();
@@ -136,7 +139,7 @@ export default function Navbar() {
           height: 15px;
           flex-shrink: 0;
           /* Width is set inline and animated by GSAP */
-          transition: none; /* GSAP owns width transitions */
+          transition: none;
         }
         .ticker-span {
           position: absolute;
@@ -154,7 +157,7 @@ export default function Navbar() {
           user-select: none;
         }
 
-        /* Nav link: ONLY the round bg highlight on hover — no underline */
+        /* Nav link: round bg highlight on hover — no underline */
         .nav-link-clean {
           font-family: var(--font-sans);
           font-size: 13px;
@@ -167,13 +170,20 @@ export default function Navbar() {
           padding: 6px 14px;
           border-radius: 100px;
           transition: background 0.22s ease;
-          /* Crucially: no ::after pseudo-element underline */
           text-decoration: none;
           display: inline-flex;
           align-items: center;
         }
         .nav-link-clean:hover {
           background: rgba(107, 117, 96, 0.13);
+        }
+
+        /* Elegant O logomark */
+        .logo-o-mark {
+          transition: transform 0.3s ease;
+        }
+        .logo-o-mark:hover {
+          transform: rotate(-5deg) scale(1.05);
         }
       `}</style>
 
@@ -214,69 +224,82 @@ export default function Navbar() {
             (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
           }}
         >
-          {/* ── BRAND MARK: custom Onahi logomark ── */}
           {/*
-            Concept: An elegant geometric monogram — an "O" with an inset
-            diagonal slash (echoing creative direction / curation) and a
-            small serif dot accent. Warm charcoal on cream — refined, 
-            editorial, and unmistakably intentional.
+            ── NEW LOGOMARK: Elegant cursive-inspired "O" ──
+            
+            A refined circle with a hand-drawn cursive O feel —
+            thin stroke, a graceful entry/exit flourish like real
+            calligraphy, a tiny gold accent dot. Feminine, editorial,
+            and unmistakably personal. The swash tail at the bottom
+            evokes signature / handwriting energy without being literal.
           */}
-          <div style={{
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
-            background: "var(--charcoal)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            position: "relative",
-            overflow: "hidden",
-          }}>
+          <div
+            className="logo-o-mark"
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              background: "var(--charcoal)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              position: "relative",
+            }}
+          >
             <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
+              width="20"
+              height="20"
+              viewBox="0 0 22 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              style={{ display: "block" }}
+              style={{ display: "block", overflow: "visible" }}
             >
               {/*
-                Mark: a clean ellipse arc (the "O" backbone) with a
-                diagonal accent stroke through it — like a creative 
-                editorial slash mark. Plus a small serif diamond top-right.
+                Main oval — slightly compressed vertically like a
+                handwritten letter O, thin elegant stroke weight
               */}
-              {/* Outer ring arc — open at bottom-right */}
-              <circle
-                cx="9"
-                cy="9"
-                r="6.5"
-                stroke="rgba(242,237,228,0.9)"
-                strokeWidth="1.2"
-                fill="none"
-                strokeDasharray="32 8"
-                strokeDashoffset="4"
-                strokeLinecap="round"
-              />
-              {/* Diagonal editorial slash */}
-              <line
-                x1="5"
-                y1="13"
-                x2="13"
-                y2="5"
-                stroke="rgba(242,237,228,0.85)"
+              <ellipse
+                cx="11"
+                cy="10.5"
+                rx="5.8"
+                ry="7"
+                stroke="rgba(242,237,228,0.92)"
                 strokeWidth="1.1"
-                strokeLinecap="round"
+                fill="none"
               />
-              {/* Small diamond accent top-right */}
-              <rect
-                x="11.5"
-                y="3.5"
-                width="2.2"
-                height="2.2"
-                transform="rotate(45 12.6 4.6)"
-                fill="var(--gold-light)"
-                opacity="0.9"
+              {/*
+                Entry flourish — top-left, like a pen starting a cursive O.
+                A short curved stroke coming in from upper left.
+              */}
+              <path
+                d="M 5.5 5.2 C 4.2 3.8 3.6 2.8 4.4 2.2"
+                stroke="rgba(242,237,228,0.75)"
+                strokeWidth="0.9"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {/*
+                Exit tail — bottom right, the signature swash of a
+                handwritten O, sweeping out gracefully to the right
+              */}
+              <path
+                d="M 16.2 13.5 C 17.8 15.2 18.2 16.8 16.8 17.6"
+                stroke="rgba(242,237,228,0.75)"
+                strokeWidth="0.9"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {/*
+                Tiny gold accent dot — like the dot of an 'i' or a
+                jewel accent, feminine and deliberate
+              */}
+              <circle
+                cx="16"
+                cy="4.5"
+                r="1.1"
+                fill="#B8997A"
+                opacity="0.95"
               />
             </svg>
           </div>
@@ -289,7 +312,7 @@ export default function Navbar() {
             flexShrink: 0,
           }} />
 
-          {/* Role ticker — width animated by GSAP */}
+          {/* Role ticker — width animated by GSAP, includes padding buffer */}
           <div ref={tickerPillRef} className="role-ticker">
             <span ref={topRef}    className="ticker-span" />
             <span ref={bottomRef} className="ticker-span" />
@@ -321,7 +344,6 @@ export default function Navbar() {
                   margin: "0 2px", flexShrink: 0,
                 }} />
               )}
-              {/* Use the clean class — only round bg on hover, no underline */}
               <button
                 className="nav-link-clean"
                 onClick={() => scrollTo(href)}

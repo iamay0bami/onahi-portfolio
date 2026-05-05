@@ -31,22 +31,11 @@ export default function Hero() {
         padding: "120px var(--container-pad) 100px",
       }}
     >
-      {/*
-        Grid: name text on the left, polaroid on the right.
-        The photo column uses a negative right margin so the polaroid
-        can bleed slightly outside the container on the right edge —
-        giving it more visual weight and making it feel bolder.
-      */}
       <div
         style={{
           position: "relative", zIndex: 2,
           maxWidth: "var(--container-max)", margin: "0 auto", width: "100%",
           display: "grid",
-          /*
-            Two columns: text gets all flexible space, photo gets a fixed
-            generous chunk. The photo column is intentionally large so the
-            frame dominates the right half of the hero.
-          */
           gridTemplateColumns: "1fr clamp(300px, 34vw, 480px)",
           gap: "clamp(32px, 5vw, 72px)",
           alignItems: "center",
@@ -100,36 +89,72 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — Bold polaroid frame */}
+        {/* RIGHT — Bold polaroid frame with realistic board pin */}
         <div
           ref={photoRef}
           className="hero-photo-wrap"
           style={{
             flexShrink: 0,
-            /*
-              Slight clockwise tilt + nudge left so the frame overlaps
-              toward the name text a touch — feels confident, not shy.
-            */
             transform: "rotate(2.5deg) translateX(-16px)",
             animation: "fadeIn 1.1s cubic-bezier(0.22,1,0.36,1) 0.9s both",
+            position: "relative",
           }}
         >
+          {/*
+            ─── REALISTIC BOARD PIN ───
+            A classic push-pin / thumbtack rendered in SVG.
+            The pin sits centered at the top of the polaroid, slightly
+            overlapping it, creating the illusion of it being nailed
+            to the pinstripe board background. It has:
+            - A round colored head with a convex highlight (like real metal/plastic)
+            - A subtle shadow under the head
+            - A short pointed shaft below
+          */}
+          <div style={{
+            position: "absolute",
+            top: "-28px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 10,
+            filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.28))",
+          }}>
+            <svg width="28" height="44" viewBox="0 0 28 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* Pin shadow on board */}
+              <ellipse cx="14" cy="22" rx="7" ry="2" fill="rgba(0,0,0,0.18)" />
+              {/* Pin shaft */}
+              <path
+                d="M 13.5 20 L 13.5 42 Q 14 44 14.5 42 L 14.5 20 Z"
+                fill="#8A7355"
+                opacity="0.85"
+              />
+              {/* Pin head base — the round disc */}
+              <circle cx="14" cy="12" r="11" fill="#9B5F44" />
+              {/* Pin head rim — slightly darker for depth */}
+              <circle cx="14" cy="12" r="11" stroke="rgba(0,0,0,0.2)" strokeWidth="1" fill="none" />
+              {/* Convex highlight — simulates the dome of a real pin head */}
+              <ellipse
+                cx="11"
+                cy="8"
+                rx="5"
+                ry="3.5"
+                fill="rgba(255,255,255,0.28)"
+                style={{ transform: "rotate(-15deg)", transformOrigin: "11px 8px" }}
+              />
+              {/* Small specular dot */}
+              <circle cx="10" cy="7.5" r="1.5" fill="rgba(255,255,255,0.45)" />
+            </svg>
+          </div>
+
           <div
             className="photo-frame"
             style={{
-              /*
-                Significantly bolder dimensions — fills the column width.
-                At 1440px viewport: ~490px wide × ~640px tall.
-                At 1024px viewport: ~350px wide × ~455px tall.
-                This gives it the weighty editorial presence of a magazine spread.
-              */
               width: "clamp(280px, 32vw, 490px)",
               height: "clamp(370px, 42vw, 640px)",
               borderRadius: "4px",
               position: "relative",
             }}
           >
-            {/* Photo area — replace with <Image> when headshot is ready */}
+            {/* Photo area */}
             <div style={{
               width: "100%", height: "87%",
               background: "linear-gradient(165deg, #cac6b9 0%, #b8b5a6 45%, #aba896 100%)",
@@ -163,17 +188,31 @@ export default function Hero() {
                 fontSize: "16px", color: "rgba(28,28,26,0.45)",
               }}>Onahi ✦</span>
             </div>
-
-            {/* Pin */}
-            <div style={{
-              position: "absolute", top: "-13px", left: "50%",
-              transform: "translateX(-50%)",
-              width: "18px", height: "18px", borderRadius: "50%",
-              background: "var(--sage-deep)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.24)",
-            }} />
           </div>
         </div>
+      </div>
+
+      {/*
+        ─── SUBTLE HERO DOODLE ───
+        A small hand-drawn-style star/asterisk in the bottom-left corner.
+        Editorial magazines use these as decorative accents.
+        Positioned far from the main content so it doesn't crowd anything.
+      */}
+      <div style={{
+        position: "absolute",
+        bottom: "clamp(40px, 7vw, 80px)",
+        left: "clamp(20px, 4vw, 56px)",
+        zIndex: 3,
+        opacity: 0.35,
+        animation: "fadeIn 1.5s ease 1.2s both",
+      }} aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          {/* 6-pointed asterisk doodle */}
+          <line x1="18" y1="2" x2="18" y2="34" stroke="var(--charcoal)" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="2" y1="18" x2="34" y2="18" stroke="var(--charcoal)" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="6" y1="6" x2="30" y2="30" stroke="var(--charcoal)" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="30" y1="6" x2="6" y2="30" stroke="var(--charcoal)" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
       </div>
 
       <style jsx>{`

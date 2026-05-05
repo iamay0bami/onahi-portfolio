@@ -17,7 +17,6 @@ export default function Values() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only float animation — no opacity manipulation
       gsap.to(photoRef.current, {
         y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
       });
@@ -47,7 +46,7 @@ export default function Values() {
         pointerEvents: "none",
       }} />
 
-      {/* Diary photo — CSS animated */}
+      {/* Diary photo with board pin */}
       <div
         ref={photoRef}
         style={{
@@ -59,6 +58,25 @@ export default function Values() {
           animation: "fadeIn 1s ease 0.3s both",
         }}
       >
+        {/* Gold pin — slightly off-center for natural feel */}
+        <div style={{
+          position: "absolute",
+          top: "-24px",
+          left: "45%",
+          transform: "translateX(-50%) rotate(-4deg)",
+          zIndex: 10,
+          filter: "drop-shadow(0 4px 7px rgba(0,0,0,0.28))",
+        }}>
+          <svg width="22" height="36" viewBox="0 0 22 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="11" cy="18" rx="5.5" ry="1.5" fill="rgba(0,0,0,0.15)" />
+            <path d="M 10.5 16 L 10.5 34 Q 11 36 11.5 34 L 11.5 16 Z" fill="#8A7355" opacity="0.85" />
+            <circle cx="11" cy="10" r="9" fill="#8A7355" />
+            <circle cx="11" cy="10" r="9" stroke="rgba(0,0,0,0.2)" strokeWidth="1" fill="none" />
+            <ellipse cx="8.5" cy="7" rx="4" ry="2.8" fill="rgba(255,255,255,0.28)" />
+            <circle cx="7.5" cy="6.5" r="1.2" fill="rgba(255,255,255,0.42)" />
+          </svg>
+        </div>
+
         <div className="photo-frame" style={{
           width: "clamp(88px, 11vw, 140px)",
           height: "clamp(115px, 14vw, 180px)",
@@ -78,6 +96,40 @@ export default function Values() {
             <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", color: "rgba(28,28,26,0.32)" }}>my values ✦</span>
           </div>
         </div>
+      </div>
+
+      {/*
+        ─── DOODLE: Small hand-drawn heart outline ───
+        Very subtle, bottom-right corner. Feminine, editorial vibe —
+        like something sketched in the margin of a creative journal.
+        Not overpowering — just a moment of personality.
+      */}
+      <div style={{
+        position: "absolute",
+        top: "clamp(40px, 7vw, 80px)",
+        right: "clamp(20px, 5vw, 60px)",
+        zIndex: 2,
+        opacity: 0.14,
+        pointerEvents: "none",
+      }} aria-hidden="true">
+        <svg width="48" height="46" viewBox="0 0 48 46" fill="none">
+          <path
+            d="M24 42 C24 42, 4 28, 4 16 C4 9, 9 4, 16 4 C20 4, 23 6, 24 8 C25 6, 28 4, 32 4 C39 4, 44 9, 44 16 C44 28, 24 42, 24 42Z"
+            stroke="var(--charcoal)"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          {/* Small flourish at bottom of heart */}
+          <path
+            d="M 24 42 C 24 42, 24 44, 26 46"
+            stroke="var(--charcoal)"
+            strokeWidth="1.1"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </svg>
       </div>
 
       <div className="wrap">
@@ -107,7 +159,6 @@ export default function Values() {
             </h2>
           </div>
 
-          {/* Quote — CSS animated */}
           <div style={{ paddingTop: "clamp(10px,1.5vw,20px)", maxWidth: "520px", animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.25s both" }}>
             <p style={{
               fontFamily: "var(--font-serif)", fontStyle: "italic", fontWeight: 300,
@@ -119,7 +170,7 @@ export default function Values() {
           </div>
         </div>
 
-        {/* Value cards 2×2 — CSS animated with stagger */}
+        {/* Value cards 2×2 */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(2,1fr)",

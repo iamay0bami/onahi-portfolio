@@ -8,7 +8,6 @@ export default function Afronated() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only continuous float animation — no initial opacity changes
       gsap.to(photoRef.current, {
         rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
       });
@@ -39,11 +38,7 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/*
-        Polaroid moved to BOTTOM-RIGHT corner of the section.
-        This keeps it compositionally balanced but does NOT overlap
-        the "The Collective" / title text in the top-left area.
-      */}
+      {/* Polaroid with board pin — bottom-right corner */}
       <div
         ref={photoRef}
         style={{
@@ -55,6 +50,25 @@ export default function Afronated() {
           animation: "fadeIn 1s ease 0.2s both",
         }}
       >
+        {/* Sage green pin */}
+        <div style={{
+          position: "absolute",
+          top: "-22px",
+          left: "48%",
+          transform: "translateX(-50%) rotate(5deg)",
+          zIndex: 10,
+          filter: "drop-shadow(0 3px 7px rgba(0,0,0,0.26))",
+        }}>
+          <svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="10" cy="16" rx="5" ry="1.4" fill="rgba(0,0,0,0.14)" />
+            <path d="M 9.5 14 L 9.5 30 Q 10 32 10.5 30 L 10.5 14 Z" fill="#6B7560" opacity="0.85" />
+            <circle cx="10" cy="8.5" r="8" fill="#6B7560" />
+            <circle cx="10" cy="8.5" r="8" stroke="rgba(0,0,0,0.18)" strokeWidth="0.9" fill="none" />
+            <ellipse cx="7.5" cy="6" rx="3.5" ry="2.4" fill="rgba(255,255,255,0.26)" />
+            <circle cx="6.8" cy="5.5" r="1.1" fill="rgba(255,255,255,0.38)" />
+          </svg>
+        </div>
+
         <div className="photo-frame" style={{
           width: "clamp(90px, 11vw, 145px)",
           height: "clamp(115px, 14vw, 185px)",
@@ -74,6 +88,29 @@ export default function Afronated() {
             <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", color: "rgba(28,28,26,0.32)" }}>Afronated ✦</span>
           </div>
         </div>
+      </div>
+
+      {/*
+        ─── DOODLE: Tiny star cluster, top-left ───
+        Three small 4-pointed stars at different sizes.
+        Like editorial scatter marks — subtle, feminine, intentional.
+      */}
+      <div style={{
+        position: "absolute",
+        top: "clamp(50px, 8vw, 100px)",
+        left: "clamp(16px, 3vw, 40px)",
+        zIndex: 2,
+        opacity: 0.16,
+        pointerEvents: "none",
+      }} aria-hidden="true">
+        <svg width="56" height="48" viewBox="0 0 56 48" fill="none">
+          {/* Star 1 — large */}
+          <path d="M 14 2 L 15.5 11 L 24 12 L 15.5 13 L 14 22 L 12.5 13 L 4 12 L 12.5 11 Z" stroke="var(--charcoal)" strokeWidth="1" fill="none" strokeLinejoin="round" />
+          {/* Star 2 — small, offset */}
+          <path d="M 40 6 L 41 11 L 46 12 L 41 13 L 40 18 L 39 13 L 34 12 L 39 11 Z" stroke="var(--charcoal)" strokeWidth="0.85" fill="none" strokeLinejoin="round" />
+          {/* Star 3 — tiny */}
+          <path d="M 30 32 L 30.7 36 L 34.5 36.5 L 30.7 37 L 30 41 L 29.3 37 L 25.5 36.5 L 29.3 36 Z" stroke="var(--charcoal)" strokeWidth="0.75" fill="none" strokeLinejoin="round" />
+        </svg>
       </div>
 
       <div className="wrap">

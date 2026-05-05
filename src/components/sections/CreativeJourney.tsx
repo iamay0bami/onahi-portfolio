@@ -22,7 +22,6 @@ export default function CreativeJourney() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Only continuous float — no initial opacity changes
       gsap.to(photoRef.current, {
         y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
       });
@@ -43,7 +42,7 @@ export default function CreativeJourney() {
         overflow: "hidden",
       }}
     >
-      {/* Floating diary photo — CSS animated */}
+      {/* Floating diary photo with realistic pin */}
       <div
         ref={photoRef}
         style={{
@@ -55,6 +54,25 @@ export default function CreativeJourney() {
           animation: "fadeIn 1s ease 0.2s both",
         }}
       >
+        {/* Terracotta/coral pin — natural off-center placement */}
+        <div style={{
+          position: "absolute",
+          top: "-24px",
+          left: "52%",
+          transform: "translateX(-50%) rotate(3deg)",
+          zIndex: 10,
+          filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.28))",
+        }}>
+          <svg width="24" height="38" viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="12" cy="19" rx="6" ry="1.6" fill="rgba(0,0,0,0.15)" />
+            <path d="M 11.5 17 L 11.5 36 Q 12 38 12.5 36 L 12.5 17 Z" fill="#C4957A" opacity="0.85" />
+            <circle cx="12" cy="10" r="9.5" fill="#C4957A" />
+            <circle cx="12" cy="10" r="9.5" stroke="rgba(0,0,0,0.18)" strokeWidth="1" fill="none" />
+            <ellipse cx="9" cy="7" rx="4.2" ry="3" fill="rgba(255,255,255,0.26)" />
+            <circle cx="8.2" cy="6.4" r="1.3" fill="rgba(255,255,255,0.4)" />
+          </svg>
+        </div>
+
         <div className="photo-frame" style={{
           width: "clamp(100px, 12vw, 155px)",
           height: "clamp(130px, 16vw, 200px)",
@@ -76,9 +94,44 @@ export default function CreativeJourney() {
         </div>
       </div>
 
+      {/*
+        ─── DOODLE: Small arrow/flourish pointing to the timeline ───
+        Placed near the top-left, like an editorial annotation arrow.
+        Very subtle — just enough character without noise.
+      */}
+      <div style={{
+        position: "absolute",
+        top: "clamp(120px, 18vw, 200px)",
+        left: "clamp(20px, 3vw, 40px)",
+        zIndex: 2,
+        opacity: 0.12,
+        pointerEvents: "none",
+        transform: "rotate(-12deg)",
+      }} aria-hidden="true">
+        <svg width="40" height="56" viewBox="0 0 40 56" fill="none">
+          {/* Curved arrow — like a hand-drawn annotation */}
+          <path
+            d="M 20 4 C 20 4, 8 18, 8 36 C 8 46, 14 52, 20 52"
+            stroke="var(--charcoal)"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            fill="none"
+          />
+          {/* Arrowhead */}
+          <path
+            d="M 13 46 L 20 52 L 26 45"
+            stroke="var(--charcoal)"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+        </svg>
+      </div>
+
       <div className="wrap">
 
-        {/* Section header — CSS animated */}
+        {/* Section header */}
         <div style={{ marginBottom: "clamp(48px,7vw,88px)", animation: "fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both" }}>
           <span style={{
             display: "block",
@@ -96,7 +149,7 @@ export default function CreativeJourney() {
           </h2>
         </div>
 
-        {/* Timeline highlights — CSS animated with stagger */}
+        {/* Timeline highlights */}
         <div style={{ marginBottom: "clamp(56px,8vw,96px)" }}>
           {HIGHLIGHTS.map((h, i) => (
             <div
@@ -133,7 +186,7 @@ export default function CreativeJourney() {
           <div style={{ borderTop: "1px solid rgba(28,28,26,0.1)" }} />
         </div>
 
-        {/* Skills grid — CSS animated */}
+        {/* Skills grid */}
         <div style={{ marginBottom: "clamp(12px,2vw,20px)", animation: "fadeUp 0.8s ease 0.15s both" }}>
           <span style={{
             fontFamily: "var(--font-sans)", fontSize: "11px",
