@@ -32,6 +32,38 @@ export default function About() {
         overflow: "hidden",
       }}
     >
+      {/*
+        ─── RULED NOTEBOOK LINES ───
+        A small cluster of 5 horizontal ruled lines — like a torn
+        corner of a notebook page tucked behind the content.
+        Bottom-right. Very quiet at 0.10 opacity.
+        Fits the creative director's studio / notepad aesthetic
+        without being childish — it's a reference to process,
+        ideas-on-paper, drafting.
+      */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          bottom: "clamp(28px, 4vw, 52px)",
+          right: "clamp(24px, 4vw, 60px)",
+          zIndex: 2,
+          opacity: 0.10,
+          pointerEvents: "none",
+          transform: "rotate(1.5deg)",
+        }}
+      >
+        <svg width="68" height="40" viewBox="0 0 68 40" fill="none">
+          <line x1="0" y1="8"  x2="68" y2="8"  stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="16" x2="68" y2="16" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="24" x2="68" y2="24" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="32" x2="68" y2="32" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="40" x2="68" y2="40" stroke="var(--charcoal)" strokeWidth="1" />
+          {/* Faint vertical margin line — like a real ruled notebook */}
+          <line x1="10" y1="0" x2="10" y2="40" stroke="var(--terracotta)" strokeWidth="0.7" opacity="0.5" />
+        </svg>
+      </div>
+
       <div className="wrap">
 
         {/* TOP — headline + bio */}
@@ -96,7 +128,7 @@ export default function About() {
           position: "relative",
         }}>
 
-          {/* Green soft circle */}
+          {/* Soft ambient circle */}
           <div style={{
             position: "absolute",
             left: "50%", bottom: "-20px",
@@ -109,7 +141,13 @@ export default function About() {
             animation: "fadeIn 1.3s ease 0.3s both",
           }} aria-hidden="true" />
 
-          {/* Photo 3 — small polaroid with pin */}
+          {/*
+            ─── PHOTO 3 — small polaroid ───
+            Uses a washi tape strip instead of a pin.
+            Variety between the three photos — not every photo
+            needs a pin; mixing methods feels more natural/organic,
+            like a real moodboard assembled over time.
+          */}
           <div
             ref={img3Ref}
             style={{
@@ -121,24 +159,22 @@ export default function About() {
               animation: "fadeIn 1.2s ease 0.5s both",
             }}
           >
-            {/* Board pin — sage green for this small photo */}
-            <div style={{
-              position: "absolute",
-              top: "-22px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 10,
-              filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.25))",
-            }}>
-              <svg width="22" height="36" viewBox="0 0 22 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="11" cy="18" rx="5.5" ry="1.5" fill="rgba(0,0,0,0.15)" />
-                <path d="M 10.5 16 L 10.5 34 Q 11 36 11.5 34 L 11.5 16 Z" fill="#6B7560" opacity="0.8" />
-                <circle cx="11" cy="10" r="9" fill="#6B7560" />
-                <circle cx="11" cy="10" r="9" stroke="rgba(0,0,0,0.18)" strokeWidth="1" fill="none" />
-                <ellipse cx="8.5" cy="7" rx="4" ry="2.8" fill="rgba(255,255,255,0.25)" />
-                <circle cx="7.5" cy="6.5" r="1.2" fill="rgba(255,255,255,0.4)" />
-              </svg>
-            </div>
+            {/* Washi tape — sage tone, slightly diagonal */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                top: "-12px",
+                left: "50%",
+                transform: "translateX(-50%) rotate(2deg)",
+                width: "clamp(50px, 7vw, 72px)",
+                height: "18px",
+                background: "rgba(107,117,96,0.38)",
+                borderRadius: "2px",
+                zIndex: 10,
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25), 0 1px 3px rgba(0,0,0,0.08)",
+              }}
+            />
 
             <div className="photo-frame" style={{
               width: "clamp(100px, 13vw, 165px)",
@@ -161,9 +197,9 @@ export default function About() {
             </div>
           </div>
 
-          {/* Photo 1 — larger, tilted left, with pin */}
+          {/* PHOTO 1 — large, tilted left, gold board pin */}
           <div style={{ position: "relative", zIndex: 2 }}>
-            {/* Gold board pin on main photo */}
+            {/* Gold board pin */}
             <div style={{
               position: "absolute",
               top: "-26px",
@@ -208,7 +244,7 @@ export default function About() {
             </div>
           </div>
 
-          {/* Photo 2 — smaller, tilted right, with terracotta pin */}
+          {/* PHOTO 2 — smaller, tilted right, terracotta pin */}
           <div style={{ position: "relative", zIndex: 3 }}>
             {/* Terracotta pin */}
             <div style={{
@@ -269,38 +305,6 @@ export default function About() {
           <text style={{ fontFamily: "var(--font-sans)", fontSize: "9.5px", fill: "var(--charcoal)", letterSpacing: "4.5px" }}>
             <textPath href="#abt-ring">CREATIVE DIRECTOR · CURATOR · FOUNDER ·</textPath>
           </text>
-        </svg>
-      </div>
-
-      {/*
-        ─── SUBTLE DOODLE: Small wavy underline scribble ───
-        Placed bottom-right of the section, very faint.
-        Like a notebook margin doodle — editorial, not childish.
-      */}
-      <div style={{
-        position: "absolute",
-        bottom: "clamp(30px, 5vw, 56px)",
-        right: "clamp(80px, 12vw, 160px)",
-        zIndex: 4,
-        opacity: 0.18,
-        pointerEvents: "none",
-      }} aria-hidden="true">
-        <svg width="72" height="22" viewBox="0 0 72 22" fill="none">
-          <path
-            d="M 2 14 C 10 8, 18 20, 26 14 C 34 8, 42 20, 50 14 C 58 8, 66 18, 70 14"
-            stroke="var(--charcoal)"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            fill="none"
-          />
-          <path
-            d="M 8 18 C 16 12, 24 24, 32 18 C 40 12, 48 24, 56 18 C 62 13, 67 20, 70 18"
-            stroke="var(--charcoal)"
-            strokeWidth="0.8"
-            strokeLinecap="round"
-            fill="none"
-            opacity="0.5"
-          />
         </svg>
       </div>
 

@@ -38,6 +38,38 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
+      {/*
+        ─── INK / PRESS MARK — top left ───
+        A faint rectangular press mark with a smudge — the kind that
+        appears on physical printed matter (zines, magazines, editorial
+        books). Single instance, one corner only. References the print/
+        media world Onahi operates in. Extremely subtle at 0.09 opacity.
+      */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "clamp(36px, 5vw, 56px)",
+          left: "clamp(20px, 3vw, 40px)",
+          zIndex: 2,
+          opacity: 0.09,
+          pointerEvents: "none",
+          transform: "rotate(-2deg)",
+        }}
+      >
+        <svg width="52" height="32" viewBox="0 0 52 32" fill="none">
+          {/* Outer rectangle — the stamp border */}
+          <rect x="1" y="1" width="50" height="30" rx="1" stroke="var(--charcoal)" strokeWidth="1.2" fill="none" />
+          {/* Inner double-line border — like a real rubber stamp */}
+          <rect x="4" y="4" width="44" height="24" rx="0.5" stroke="var(--charcoal)" strokeWidth="0.5" fill="none" />
+          {/* Stamp text */}
+          <text x="26" y="13" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "5px", letterSpacing: "2px", fill: "var(--charcoal)", textTransform: "uppercase" }}>AFRONATED</text>
+          <text x="26" y="21" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "4px", letterSpacing: "1.5px", fill: "var(--charcoal)" }}>LAGOS · MEDIA</text>
+          {/* Smudge/blur mark — an imperfect ink edge */}
+          <path d="M 2 28 Q 8 30 14 27 Q 10 29 6 31" stroke="var(--charcoal)" strokeWidth="0.6" fill="none" opacity="0.5" />
+        </svg>
+      </div>
+
       {/* Polaroid with board pin — bottom-right corner */}
       <div
         ref={photoRef}
@@ -69,6 +101,33 @@ export default function Afronated() {
           </svg>
         </div>
 
+        {/*
+          ─── CROP MARKS on this Afronated photo ───
+          Same editorial contact-sheet feel as the hero photo.
+          Gives variety between photos (washi tape on About small photo,
+          crop marks here and hero, pins on main photos).
+        */}
+        {/* TL */}
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", top: "-8px", left: "-8px", opacity: 0.2, zIndex: 12 }}>
+          <path d="M 0 8 L 0 0 L 8 0" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        {/* TR */}
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", top: "-8px", right: "-8px", opacity: 0.2, zIndex: 12 }}>
+          <path d="M 6 0 L 14 0 L 14 8" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        {/* BL */}
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", bottom: "-8px", left: "-8px", opacity: 0.2, zIndex: 12 }}>
+          <path d="M 0 6 L 0 14 L 8 14" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        {/* BR */}
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", bottom: "-8px", right: "-8px", opacity: 0.2, zIndex: 12 }}>
+          <path d="M 6 14 L 14 14 L 14 6" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+
         <div className="photo-frame" style={{
           width: "clamp(90px, 11vw, 145px)",
           height: "clamp(115px, 14vw, 185px)",
@@ -88,29 +147,6 @@ export default function Afronated() {
             <span style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", color: "rgba(28,28,26,0.32)" }}>Afronated ✦</span>
           </div>
         </div>
-      </div>
-
-      {/*
-        ─── DOODLE: Tiny star cluster, top-left ───
-        Three small 4-pointed stars at different sizes.
-        Like editorial scatter marks — subtle, feminine, intentional.
-      */}
-      <div style={{
-        position: "absolute",
-        top: "clamp(50px, 8vw, 100px)",
-        left: "clamp(16px, 3vw, 40px)",
-        zIndex: 2,
-        opacity: 0.16,
-        pointerEvents: "none",
-      }} aria-hidden="true">
-        <svg width="56" height="48" viewBox="0 0 56 48" fill="none">
-          {/* Star 1 — large */}
-          <path d="M 14 2 L 15.5 11 L 24 12 L 15.5 13 L 14 22 L 12.5 13 L 4 12 L 12.5 11 Z" stroke="var(--charcoal)" strokeWidth="1" fill="none" strokeLinejoin="round" />
-          {/* Star 2 — small, offset */}
-          <path d="M 40 6 L 41 11 L 46 12 L 41 13 L 40 18 L 39 13 L 34 12 L 39 11 Z" stroke="var(--charcoal)" strokeWidth="0.85" fill="none" strokeLinejoin="round" />
-          {/* Star 3 — tiny */}
-          <path d="M 30 32 L 30.7 36 L 34.5 36.5 L 30.7 37 L 30 41 L 29.3 37 L 25.5 36.5 L 29.3 36 Z" stroke="var(--charcoal)" strokeWidth="0.75" fill="none" strokeLinejoin="round" />
-        </svg>
       </div>
 
       <div className="wrap">

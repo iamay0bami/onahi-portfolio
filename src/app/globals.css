@@ -156,58 +156,38 @@ html.lenis, html.lenis body { height: auto; }
 .spin-cw  { animation: spin-cw  20s linear infinite; }
 .spin-ccw { animation: spin-ccw 24s linear infinite; }
 
-/* ─── CSS REVEAL ANIMATIONS ─── 
-   These fire purely via CSS — no JS dependency.
-   Elements are VISIBLE by default; animation is additive decoration.
-─── */
-
-/* Fade up — used for section content */
+/* ─── CSS REVEAL ANIMATIONS ─── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-/* Fade in — simple opacity */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
-/* Slide in from left */
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-32px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
-/* Slide in from right */
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(32px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
-/* Hero name clip reveal */
 @keyframes clipReveal {
   from { clip-path: inset(0 0 100% 0); opacity: 0; transform: translateY(40px); }
   to   { clip-path: inset(0 0 0% 0);   opacity: 1; transform: translateY(0); }
 }
 
 /* ─── SECTION ANIMATE CLASSES ─── */
-/* Default: content is visible. JS animations are purely decorative. */
-
 .section-reveal {
-  /* Content visible immediately — CSS animation fires on load */
   animation: fadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-
 .section-reveal-left {
   animation: slideInLeft 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-
 .section-reveal-right {
   animation: slideInRight 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-
-/* Stagger delays */
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
 .delay-3 { animation-delay: 0.3s; }
@@ -374,13 +354,46 @@ html.lenis, html.lenis body { height: auto; }
   background-repeat: repeat;
 }
 
-/* ─── GSAP ANIMATION SAFETY NET ─────────────────────────────────────
-   NEVER let GSAP set opacity:0 as an initial state.
-   All content must be visible by default.
-─────────────────────────────────────────────────────────────────── */
+/* ─── GSAP SAFETY ─── */
 .gsap-reveal {
   opacity: 1;
   transform: none;
+}
+
+/* ─── EDITORIAL MARK UTILITIES ─────────────────────────────────────
+   Reusable classes for the corkboard/moodboard doodle system.
+   All marks are aria-hidden, pointer-events:none, absolutely positioned.
+   Opacity is kept low — they recede into the background.
+────────────────────────────────────────────────────────────────── */
+
+/* Washi tape strip — a semi-transparent slightly rotated rectangle */
+.washi {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  border-radius: 2px;
+}
+
+/* Crop-mark corner — tiny L-shaped bracket, editorial contact-sheet feel */
+.crop-mark {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.13;
+}
+
+/* Postmark / stamp circle */
+.postmark {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Notebook ruled lines cluster */
+.ruled-lines {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* ─── RESPONSIVE ─── */
@@ -389,4 +402,6 @@ html.lenis, html.lenis body { height: auto; }
   .show-mobile { display: flex !important; }
   #proj-preview { display: none !important; }
   #floating-ball { display: none; }
+  .washi { display: none !important; }
+  .postmark { display: none !important; }
 }

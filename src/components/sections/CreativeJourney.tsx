@@ -42,7 +42,7 @@ export default function CreativeJourney() {
         overflow: "hidden",
       }}
     >
-      {/* Floating diary photo with realistic pin */}
+      {/* Floating diary photo with coral pin + crop marks */}
       <div
         ref={photoRef}
         style={{
@@ -54,7 +54,7 @@ export default function CreativeJourney() {
           animation: "fadeIn 1s ease 0.2s both",
         }}
       >
-        {/* Terracotta/coral pin — natural off-center placement */}
+        {/* Coral/rose pin */}
         <div style={{
           position: "absolute",
           top: "-24px",
@@ -72,6 +72,24 @@ export default function CreativeJourney() {
             <circle cx="8.2" cy="6.4" r="1.3" fill="rgba(255,255,255,0.4)" />
           </svg>
         </div>
+
+        {/* Crop marks on this photo */}
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", top: "-8px", left: "-8px", opacity: 0.18, zIndex: 12 }}>
+          <path d="M 0 8 L 0 0 L 8 0" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", top: "-8px", right: "-8px", opacity: 0.18, zIndex: 12 }}>
+          <path d="M 6 0 L 14 0 L 14 8" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", bottom: "-8px", left: "-8px", opacity: 0.18, zIndex: 12 }}>
+          <path d="M 0 6 L 0 14 L 8 14" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
+          style={{ position: "absolute", bottom: "-8px", right: "-8px", opacity: 0.18, zIndex: 12 }}>
+          <path d="M 6 14 L 14 14 L 14 6" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
+        </svg>
 
         <div className="photo-frame" style={{
           width: "clamp(100px, 12vw, 155px)",
@@ -95,37 +113,41 @@ export default function CreativeJourney() {
       </div>
 
       {/*
-        ─── DOODLE: Small arrow/flourish pointing to the timeline ───
-        Placed near the top-left, like an editorial annotation arrow.
-        Very subtle — just enough character without noise.
+        ─── POSTMARK STAMP — bottom left ───
+        Replaces the weak arrow doodle entirely.
+        A circular postmark reading "CREATIVE JOURNEY · 2021 – NOW"
+        gives the sense of a documented life's work — archival,
+        editorial, real. Fits the timeline/journey narrative perfectly.
+        The arrow was instructional; this is atmospheric.
+        Faint at 0.10 opacity, slightly tilted.
       */}
-      <div style={{
-        position: "absolute",
-        top: "clamp(120px, 18vw, 200px)",
-        left: "clamp(20px, 3vw, 40px)",
-        zIndex: 2,
-        opacity: 0.12,
-        pointerEvents: "none",
-        transform: "rotate(-12deg)",
-      }} aria-hidden="true">
-        <svg width="40" height="56" viewBox="0 0 40 56" fill="none">
-          {/* Curved arrow — like a hand-drawn annotation */}
-          <path
-            d="M 20 4 C 20 4, 8 18, 8 36 C 8 46, 14 52, 20 52"
-            stroke="var(--charcoal)"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* Arrowhead */}
-          <path
-            d="M 13 46 L 20 52 L 26 45"
-            stroke="var(--charcoal)"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          bottom: "clamp(40px, 6vw, 72px)",
+          left: "clamp(20px, 3vw, 44px)",
+          zIndex: 2,
+          opacity: 0.10,
+          pointerEvents: "none",
+          transform: "rotate(-15deg)",
+        }}
+      >
+        <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+          {/* Outer dashed ring */}
+          <circle cx="48" cy="48" r="44" stroke="var(--charcoal)" strokeWidth="1.3" fill="none" strokeDasharray="4 2.5" />
+          {/* Inner solid ring */}
+          <circle cx="48" cy="48" r="34" stroke="var(--charcoal)" strokeWidth="0.8" fill="none" />
+          {/* Text on path */}
+          <defs>
+            <path id="jrny-stamp" d="M 48,48 m -26,0 a 26,26 0 1,1 52,0 a 26,26 0 1,1 -52,0" />
+          </defs>
+          <text style={{ fontFamily: "var(--font-sans)", fontSize: "6.5px", letterSpacing: "2.8px", fill: "var(--charcoal)" }}>
+            <textPath href="#jrny-stamp">CREATIVE JOURNEY · 2021–NOW ·</textPath>
+          </text>
+          {/* Centre */}
+          <text x="48" y="44" textAnchor="middle" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", fill: "var(--charcoal)" }}>Onahi</text>
+          <text x="48" y="54" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "5px", letterSpacing: "2px", fill: "var(--charcoal)" }}>LAGOS</text>
         </svg>
       </div>
 

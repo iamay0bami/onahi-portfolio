@@ -77,6 +77,30 @@ export default function Values() {
           </svg>
         </div>
 
+        {/*
+          ─── DIAGONAL MASKING TAPE STRIP ───
+          A single strip of tape running diagonally across the top-right
+          corner of the photo — like a label stub or a piece of masking
+          tape used to annotate a reference photo on a real moodboard.
+          Warm cream/amber translucent tone. This is the one instance
+          of tape-as-diagonal on the whole site. Unique to this photo.
+        */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "-18px",
+            width: "56px",
+            height: "14px",
+            background: "rgba(184,153,122,0.36)",
+            borderRadius: "1px",
+            zIndex: 11,
+            transform: "rotate(42deg)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 3px rgba(0,0,0,0.10)",
+          }}
+        />
+
         <div className="photo-frame" style={{
           width: "clamp(88px, 11vw, 140px)",
           height: "clamp(115px, 14vw, 180px)",
@@ -99,41 +123,35 @@ export default function Values() {
       </div>
 
       {/*
-        ─── DOODLE: Small hand-drawn heart outline ───
-        Very subtle, bottom-right corner. Feminine, editorial vibe —
-        like something sketched in the margin of a creative journal.
-        Not overpowering — just a moment of personality.
+        ─── TOP RIGHT: Ruled lines cluster ───
+        Matches the notebook aesthetic from About section but placed
+        top-right here for compositional balance. These are the
+        "notepad" moment — creative director's draft lines.
+        Extremely faint at 0.08 opacity.
       */}
-      <div style={{
-        position: "absolute",
-        top: "clamp(40px, 7vw, 80px)",
-        right: "clamp(20px, 5vw, 60px)",
-        zIndex: 2,
-        opacity: 0.14,
-        pointerEvents: "none",
-      }} aria-hidden="true">
-        <svg width="48" height="46" viewBox="0 0 48 46" fill="none">
-          <path
-            d="M24 42 C24 42, 4 28, 4 16 C4 9, 9 4, 16 4 C20 4, 23 6, 24 8 C25 6, 28 4, 32 4 C39 4, 44 9, 44 16 C44 28, 24 42, 24 42Z"
-            stroke="var(--charcoal)"
-            strokeWidth="1.3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          {/* Small flourish at bottom of heart */}
-          <path
-            d="M 24 42 C 24 42, 24 44, 26 46"
-            stroke="var(--charcoal)"
-            strokeWidth="1.1"
-            strokeLinecap="round"
-            fill="none"
-          />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "clamp(40px, 6vw, 72px)",
+          right: "clamp(28px, 5vw, 64px)",
+          zIndex: 2,
+          opacity: 0.08,
+          pointerEvents: "none",
+          transform: "rotate(-0.8deg)",
+        }}
+      >
+        <svg width="56" height="34" viewBox="0 0 56 34" fill="none">
+          <line x1="0" y1="7"  x2="56" y2="7"  stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="14" x2="56" y2="14" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="21" x2="56" y2="21" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="0" y1="28" x2="56" y2="28" stroke="var(--charcoal)" strokeWidth="1" />
+          <line x1="8" y1="0"  x2="8"  y2="34" stroke="var(--terracotta)" strokeWidth="0.6" opacity="0.45" />
         </svg>
       </div>
 
       <div className="wrap">
-        {/* Header row — CSS animated */}
+        {/* Header row */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "auto 1fr",
