@@ -16,16 +16,12 @@ export default function Navbar() {
   const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const busyRef  = useRef(false);
 
-  // Measure text width using a hidden canvas for pixel-perfect sizing
-  // We add generous padding so text never clips
   const measureText = useCallback((text: string): number => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     if (!ctx) return 140;
-    // Match the actual rendered font as closely as possible
     ctx.font = "300 12px 'Jost', system-ui, sans-serif";
     const measured = Math.ceil(ctx.measureText(text).width);
-    // Add 10px safety buffer on each side to prevent any clipping
     return measured + 20;
   }, []);
 
@@ -43,7 +39,6 @@ export default function Navbar() {
 
     gsap.set(bottom, { y: 14, opacity: 0 });
 
-    // Animate pill width to fit new text + padding buffer
     if (pill) {
       const newWidth = measureText(ROLES[nextIdx]);
       gsap.to(pill, { width: newWidth, duration: 0.45, ease: "power2.inOut" });
@@ -71,7 +66,6 @@ export default function Navbar() {
   }, [animateTo]);
 
   useEffect(() => {
-    // Seed spans on mount
     if (topRef.current) {
       topRef.current.textContent = ROLES[0];
       gsap.set(topRef.current, { y: 0, opacity: 1 });
@@ -80,7 +74,6 @@ export default function Navbar() {
       bottomRef.current.textContent = ROLES[1];
       gsap.set(bottomRef.current, { y: 14, opacity: 0 });
     }
-    // Set initial pill width — use measureText which includes padding buffer
     if (tickerPillRef.current) {
       tickerPillRef.current.style.width = `${measureText(ROLES[0])}px`;
     }
@@ -117,6 +110,16 @@ export default function Navbar() {
     };
   }, [animateTo, startCycle, measureText]);
 
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   const scrollTo = (id: string) => {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
@@ -138,13 +141,11 @@ export default function Navbar() {
           overflow: hidden;
           height: 15px;
           flex-shrink: 0;
-          /* Width is set inline and animated by GSAP */
           transition: none;
         }
         .ticker-span {
           position: absolute;
-          left: 0;
-          top: 0;
+          left: 0; top: 0;
           line-height: 15px;
           white-space: nowrap;
           font-family: var(--font-sans);
@@ -156,8 +157,6 @@ export default function Navbar() {
           pointer-events: none;
           user-select: none;
         }
-
-        /* Nav link: round bg highlight on hover — no underline */
         .nav-link-clean {
           font-family: var(--font-sans);
           font-size: 13px;
@@ -174,16 +173,71 @@ export default function Navbar() {
           display: inline-flex;
           align-items: center;
         }
-        .nav-link-clean:hover {
-          background: rgba(107, 117, 96, 0.13);
-        }
+        .nav-link-clean:hover { background: rgba(107, 117, 96, 0.13); }
+        .logo-o-mark { transition: transform 0.3s ease; }
+        .logo-o-mark:hover { transform: rotate(-5deg) scale(1.05); }
 
-        /* Elegant O logomark */
-        .logo-o-mark {
-          transition: transform 0.3s ease;
+        /* Mobile menu overlay */
+        .mobile-menu-overlay {
+          position: fixed;
+          inset: 0;
+          background: var(--cream);
+          z-index: 300;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 28px;
+          transform: translateX(100%);
+          transition: transform 0.5s cubic-bezier(0.76,0,0.24,1);
         }
-        .logo-o-mark:hover {
-          transform: rotate(-5deg) scale(1.05);
+        .mobile-menu-overlay.open { transform: translateX(0); }
+        .mobile-menu-overlay a {
+          font-family: var(--font-serif);
+          font-size: clamp(32px, 8vw, 56px);
+          color: var(--charcoal);
+          text-decoration: none;
+          font-weight: 300;
+          opacity: 0.45;
+          transition: opacity 0.3s;
+          cursor: pointer;
+        }
+        .mobile-menu-overlay a:hover { opacity: 1; }
+
+        /* Close button inside mobile menu */
+        .mobile-menu-close {
+          position: absolute;
+          top: 24px;
+          right: 24px;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          background: rgba(28,28,26,0.08);
+          border: 1px solid rgba(28,28,26,0.12);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s ease;
+        }
+        .mobile-menu-close:hover { background: rgba(28,28,26,0.14); }
+        .mobile-menu-close svg { display: block; }
+
+        /* Hamburger button — only visible on mobile */
+        .hamburger-btn {
+          display: none;
+          flex-direction: column;
+          gap: 5px;
+          padding: 10px 12px;
+          background: ${pillBg};
+          border: 1px solid ${pillBorder};
+          border-radius: 10px;
+          box-shadow: ${pillShadow};
+          cursor: pointer;
+        }
+        @media (max-width: 768px) {
+          .nav-links-pill { display: none !important; }
+          .hamburger-btn { display: flex !important; }
         }
       `}</style>
 
@@ -191,7 +245,7 @@ export default function Navbar() {
         ref={navRef}
         style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
-          padding: "16px clamp(20px, 4vw, 56px)",
+          padding: "16px clamp(16px, 4vw, 56px)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
           background: "transparent",
         }}
@@ -215,8 +269,7 @@ export default function Navbar() {
             transition: "box-shadow 0.25s ease, transform 0.2s ease",
           }}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.boxShadow =
-              "0 4px 18px rgba(28,28,26,0.14), 0 1px 4px rgba(28,28,26,0.10)";
+            (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 18px rgba(28,28,26,0.14), 0 1px 4px rgba(28,28,26,0.10)";
             (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
           }}
           onMouseLeave={e => {
@@ -224,166 +277,64 @@ export default function Navbar() {
             (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
           }}
         >
-          {/*
-            ── NEW LOGOMARK: Elegant cursive-inspired "O" ──
-            
-            A refined circle with a hand-drawn cursive O feel —
-            thin stroke, a graceful entry/exit flourish like real
-            calligraphy, a tiny gold accent dot. Feminine, editorial,
-            and unmistakably personal. The swash tail at the bottom
-            evokes signature / handwriting energy without being literal.
-          */}
-          <div
-            className="logo-o-mark"
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "50%",
-              background: "var(--charcoal)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              position: "relative",
-            }}
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 22 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ display: "block", overflow: "visible" }}
-            >
-              {/*
-                Main oval — slightly compressed vertically like a
-                handwritten letter O, thin elegant stroke weight
-              */}
-              <ellipse
-                cx="11"
-                cy="10.5"
-                rx="5.8"
-                ry="7"
-                stroke="rgba(242,237,228,0.92)"
-                strokeWidth="1.1"
-                fill="none"
-              />
-              {/*
-                Entry flourish — top-left, like a pen starting a cursive O.
-                A short curved stroke coming in from upper left.
-              */}
-              <path
-                d="M 5.5 5.2 C 4.2 3.8 3.6 2.8 4.4 2.2"
-                stroke="rgba(242,237,228,0.75)"
-                strokeWidth="0.9"
-                strokeLinecap="round"
-                fill="none"
-              />
-              {/*
-                Exit tail — bottom right, the signature swash of a
-                handwritten O, sweeping out gracefully to the right
-              */}
-              <path
-                d="M 16.2 13.5 C 17.8 15.2 18.2 16.8 16.8 17.6"
-                stroke="rgba(242,237,228,0.75)"
-                strokeWidth="0.9"
-                strokeLinecap="round"
-                fill="none"
-              />
-              {/*
-                Tiny gold accent dot — like the dot of an 'i' or a
-                jewel accent, feminine and deliberate
-              */}
-              <circle
-                cx="16"
-                cy="4.5"
-                r="1.1"
-                fill="#B8997A"
-                opacity="0.95"
-              />
+          <div className="logo-o-mark" style={{
+            width: 30, height: 30, borderRadius: "50%",
+            background: "var(--charcoal)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, position: "relative",
+          }}>
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ display: "block", overflow: "visible" }}>
+              <ellipse cx="11" cy="10.5" rx="5.8" ry="7" stroke="rgba(242,237,228,0.92)" strokeWidth="1.1" fill="none" />
+              <path d="M 5.5 5.2 C 4.2 3.8 3.6 2.8 4.4 2.2" stroke="rgba(242,237,228,0.75)" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+              <path d="M 16.2 13.5 C 17.8 15.2 18.2 16.8 16.8 17.6" stroke="rgba(242,237,228,0.75)" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+              <circle cx="16" cy="4.5" r="1.1" fill="#B8997A" opacity="0.95" />
             </svg>
           </div>
 
-          {/* Divider */}
-          <div style={{
-            width: "1px",
-            height: "14px",
-            background: "rgba(28,28,26,0.15)",
-            flexShrink: 0,
-          }} />
+          <div style={{ width: "1px", height: "14px", background: "rgba(28,28,26,0.15)", flexShrink: 0 }} />
 
-          {/* Role ticker — width animated by GSAP, includes padding buffer */}
           <div ref={tickerPillRef} className="role-ticker">
             <span ref={topRef}    className="ticker-span" />
             <span ref={bottomRef} className="ticker-span" />
           </div>
         </button>
 
-        {/* ── RIGHT: Nav links pill ── */}
+        {/* ── RIGHT: Nav links pill (desktop only) ── */}
         <div
-          className="hide-mobile"
+          className="nav-links-pill"
           style={{
-            display: "flex",
-            alignItems: "center",
+            display: "flex", alignItems: "center",
             background: pillBg,
             border: `1px solid ${pillBorder}`,
             borderRadius: "100px",
             boxShadow: pillShadow,
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
-            padding: "5px 6px 5px 8px",
-            gap: "0",
+            padding: "5px 6px 5px 8px", gap: "0",
           }}
         >
           {(["#portfolio", "#values", "#what"] as const).map((href, i) => (
             <div key={href} style={{ display: "flex", alignItems: "center" }}>
               {i > 0 && (
-                <div style={{
-                  width: "1px", height: "14px",
-                  background: "rgba(28,28,26,0.15)",
-                  margin: "0 2px", flexShrink: 0,
-                }} />
+                <div style={{ width: "1px", height: "14px", background: "rgba(28,28,26,0.15)", margin: "0 2px", flexShrink: 0 }} />
               )}
-              <button
-                className="nav-link-clean"
-                onClick={() => scrollTo(href)}
-              >
+              <button className="nav-link-clean" onClick={() => scrollTo(href)}>
                 {["Portfolio", "My Values", "What I Do"][i]}
               </button>
             </div>
           ))}
-
-          <div style={{
-            width: "1px", height: "14px",
-            background: "rgba(28,28,26,0.15)",
-            margin: "0 4px 0 2px", flexShrink: 0,
-          }} />
-
-          <button
-            className="contact-pill"
-            onClick={() => scrollTo("#contact")}
-            style={{ padding: "8px 20px", fontSize: "13px" }}
-          >
+          <div style={{ width: "1px", height: "14px", background: "rgba(28,28,26,0.15)", margin: "0 4px 0 2px", flexShrink: 0 }} />
+          <button className="contact-pill" onClick={() => scrollTo("#contact")} style={{ padding: "8px 20px", fontSize: "13px" }}>
             Contact
           </button>
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="show-mobile"
+          className="hamburger-btn"
           onClick={() => setMenuOpen(v => !v)}
-          style={{
-            background: pillBg,
-            border: `1px solid ${pillBorder}`,
-            borderRadius: "10px",
-            boxShadow: pillShadow,
-            cursor: "pointer",
-            display: "none",
-            flexDirection: "column",
-            gap: "5px",
-            padding: "10px 12px",
-          }}
-          aria-label="Menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
         >
           {[0, 1, 2].map(i => (
             <span key={i} style={{
@@ -400,13 +351,40 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
-      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+      {/* Mobile menu overlay */}
+      <div className={`mobile-menu-overlay ${menuOpen ? "open" : ""}`} role="dialog" aria-modal="true" aria-label="Navigation menu">
+        {/* Close button — prominent X in top-right corner */}
+        <button
+          className="mobile-menu-close"
+          onClick={() => setMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M 2 2 L 14 14 M 14 2 L 2 14" stroke="var(--charcoal)" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        {/* Nav links */}
         {["#portfolio", "#about", "#values", "#what", "#contact"].map((h, i) => (
-          <a key={h} onClick={() => scrollTo(h)} href="#">
+          <a key={h} onClick={() => scrollTo(h)} href="#" role="menuitem">
             {["Portfolio", "About", "My Values", "What I Do", "Contact"][i]}
           </a>
         ))}
+
+        {/* Bottom brand note */}
+        <div style={{
+          position: "absolute",
+          bottom: "32px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontFamily: "var(--font-serif)",
+          fontStyle: "italic",
+          fontSize: "12px",
+          color: "rgba(28,28,26,0.25)",
+          whiteSpace: "nowrap",
+        }}>
+          Onahi Ijeh · Lagos
+        </div>
       </div>
     </>
   );

@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
 
 const SKILLS = [
   { category: "Creative",    items: ["Brand Identity", "Creative Direction", "Art Direction", "Mood Boarding", "Storyboarding", "Visual Curation"] },
@@ -17,23 +15,9 @@ const HIGHLIGHTS = [
 ];
 
 export default function CreativeJourney() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const photoRef   = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.to(photoRef.current, {
-        y: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
       id="journey"
-      ref={sectionRef}
       className="pinstripe"
       style={{
         background: "var(--cream)",
@@ -42,28 +26,22 @@ export default function CreativeJourney() {
         overflow: "hidden",
       }}
     >
-      {/* Floating diary photo with coral pin + crop marks */}
-      <div
-        ref={photoRef}
-        style={{
-          position: "absolute",
-          top: "clamp(30px, 5vw, 60px)",
-          right: "clamp(16px, 4vw, 56px)",
-          zIndex: 5,
-          transform: "rotate(5deg)",
-          animation: "fadeIn 1s ease 0.2s both",
-        }}
-      >
+      {/* Floating diary photo — hidden on mobile, stays put (no animation) */}
+      <div className="journey-photo" style={{
+        position: "absolute",
+        top: "clamp(30px, 5vw, 60px)",
+        right: "clamp(16px, 4vw, 56px)",
+        zIndex: 5,
+        transform: "rotate(5deg)",
+        animation: "fadeIn 1s ease 0.2s both",
+      }}>
         {/* Coral/rose pin */}
         <div style={{
-          position: "absolute",
-          top: "-24px",
-          left: "52%",
-          transform: "translateX(-50%) rotate(3deg)",
-          zIndex: 10,
+          position: "absolute", top: "-24px", left: "52%",
+          transform: "translateX(-50%) rotate(3deg)", zIndex: 10,
           filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.28))",
         }}>
-          <svg width="24" height="38" viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="24" height="38" viewBox="0 0 24 38" fill="none">
             <ellipse cx="12" cy="19" rx="6" ry="1.6" fill="rgba(0,0,0,0.15)" />
             <path d="M 11.5 17 L 11.5 36 Q 12 38 12.5 36 L 12.5 17 Z" fill="#C4957A" opacity="0.85" />
             <circle cx="12" cy="10" r="9.5" fill="#C4957A" />
@@ -73,7 +51,7 @@ export default function CreativeJourney() {
           </svg>
         </div>
 
-        {/* Crop marks on this photo */}
+        {/* Crop marks */}
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ position: "absolute", top: "-8px", left: "-8px", opacity: 0.18, zIndex: 12 }}>
           <path d="M 0 8 L 0 0 L 8 0" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
@@ -112,40 +90,24 @@ export default function CreativeJourney() {
         </div>
       </div>
 
-      {/*
-        ─── POSTMARK STAMP — bottom left ───
-        Replaces the weak arrow doodle entirely.
-        A circular postmark reading "CREATIVE JOURNEY · 2021 – NOW"
-        gives the sense of a documented life's work — archival,
-        editorial, real. Fits the timeline/journey narrative perfectly.
-        The arrow was instructional; this is atmospheric.
-        Faint at 0.10 opacity, slightly tilted.
-      */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: "clamp(40px, 6vw, 72px)",
-          left: "clamp(20px, 3vw, 44px)",
-          zIndex: 2,
-          opacity: 0.10,
-          pointerEvents: "none",
-          transform: "rotate(-15deg)",
-        }}
-      >
+      {/* Postmark stamp — bottom left */}
+      <div aria-hidden="true" style={{
+        position: "absolute",
+        bottom: "clamp(40px, 6vw, 72px)",
+        left: "clamp(20px, 3vw, 44px)",
+        zIndex: 2, opacity: 0.10,
+        pointerEvents: "none",
+        transform: "rotate(-15deg)",
+      }}>
         <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
-          {/* Outer dashed ring */}
           <circle cx="48" cy="48" r="44" stroke="var(--charcoal)" strokeWidth="1.3" fill="none" strokeDasharray="4 2.5" />
-          {/* Inner solid ring */}
           <circle cx="48" cy="48" r="34" stroke="var(--charcoal)" strokeWidth="0.8" fill="none" />
-          {/* Text on path */}
           <defs>
             <path id="jrny-stamp" d="M 48,48 m -26,0 a 26,26 0 1,1 52,0 a 26,26 0 1,1 -52,0" />
           </defs>
           <text style={{ fontFamily: "var(--font-sans)", fontSize: "6.5px", letterSpacing: "2.8px", fill: "var(--charcoal)" }}>
             <textPath href="#jrny-stamp">CREATIVE JOURNEY · 2021–NOW ·</textPath>
           </text>
-          {/* Centre */}
           <text x="48" y="44" textAnchor="middle" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "8px", fill: "var(--charcoal)" }}>Onahi</text>
           <text x="48" y="54" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "5px", letterSpacing: "2px", fill: "var(--charcoal)" }}>LAGOS</text>
         </svg>
@@ -252,6 +214,19 @@ export default function CreativeJourney() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          /* Hide diary photo on mobile — it overlaps the header */
+          .journey-photo { display: none !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .journey-photo {
+            top: 20px !important;
+            right: 16px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

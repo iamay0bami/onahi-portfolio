@@ -1,25 +1,9 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
 
 export default function Afronated() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const photoRef   = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.to(photoRef.current, {
-        rotate: -3, y: -6, duration: 3.5, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
       id="afronated"
-      ref={sectionRef}
       className="pinstripe"
       style={{
         background: "var(--cream)",
@@ -38,60 +22,40 @@ export default function Afronated() {
         whiteSpace: "nowrap",
       }}>Afronated</div>
 
-      {/*
-        ─── INK / PRESS MARK — top left ───
-        A faint rectangular press mark with a smudge — the kind that
-        appears on physical printed matter (zines, magazines, editorial
-        books). Single instance, one corner only. References the print/
-        media world Onahi operates in. Extremely subtle at 0.09 opacity.
-      */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "clamp(36px, 5vw, 56px)",
-          left: "clamp(20px, 3vw, 40px)",
-          zIndex: 2,
-          opacity: 0.09,
-          pointerEvents: "none",
-          transform: "rotate(-2deg)",
-        }}
-      >
+      {/* Ink press mark — top left */}
+      <div aria-hidden="true" style={{
+        position: "absolute",
+        top: "clamp(36px, 5vw, 56px)",
+        left: "clamp(20px, 3vw, 40px)",
+        zIndex: 2, opacity: 0.09,
+        pointerEvents: "none",
+        transform: "rotate(-2deg)",
+      }}>
         <svg width="52" height="32" viewBox="0 0 52 32" fill="none">
-          {/* Outer rectangle — the stamp border */}
           <rect x="1" y="1" width="50" height="30" rx="1" stroke="var(--charcoal)" strokeWidth="1.2" fill="none" />
-          {/* Inner double-line border — like a real rubber stamp */}
           <rect x="4" y="4" width="44" height="24" rx="0.5" stroke="var(--charcoal)" strokeWidth="0.5" fill="none" />
-          {/* Stamp text */}
           <text x="26" y="13" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "5px", letterSpacing: "2px", fill: "var(--charcoal)", textTransform: "uppercase" }}>AFRONATED</text>
           <text x="26" y="21" textAnchor="middle" style={{ fontFamily: "var(--font-sans)", fontSize: "4px", letterSpacing: "1.5px", fill: "var(--charcoal)" }}>LAGOS · MEDIA</text>
-          {/* Smudge/blur mark — an imperfect ink edge */}
           <path d="M 2 28 Q 8 30 14 27 Q 10 29 6 31" stroke="var(--charcoal)" strokeWidth="0.6" fill="none" opacity="0.5" />
         </svg>
       </div>
 
-      {/* Polaroid with board pin — bottom-right corner */}
-      <div
-        ref={photoRef}
-        style={{
-          position: "absolute",
-          bottom: "clamp(32px, 5vw, 64px)",
-          right: "clamp(32px, 5vw, 72px)",
-          zIndex: 5,
-          transform: "rotate(4deg)",
-          animation: "fadeIn 1s ease 0.2s both",
-        }}
-      >
+      {/* Polaroid with board pin — bottom-right, hidden on small mobile, repositioned on tablet */}
+      <div className="afrn-photo" style={{
+        position: "absolute",
+        bottom: "clamp(32px, 5vw, 64px)",
+        right: "clamp(32px, 5vw, 72px)",
+        zIndex: 5,
+        transform: "rotate(4deg)",
+        animation: "fadeIn 1s ease 0.2s both",
+      }}>
         {/* Sage green pin */}
         <div style={{
-          position: "absolute",
-          top: "-22px",
-          left: "48%",
-          transform: "translateX(-50%) rotate(5deg)",
-          zIndex: 10,
+          position: "absolute", top: "-22px", left: "48%",
+          transform: "translateX(-50%) rotate(5deg)", zIndex: 10,
           filter: "drop-shadow(0 3px 7px rgba(0,0,0,0.26))",
         }}>
-          <svg width="20" height="32" viewBox="0 0 20 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="20" height="32" viewBox="0 0 20 32" fill="none">
             <ellipse cx="10" cy="16" rx="5" ry="1.4" fill="rgba(0,0,0,0.14)" />
             <path d="M 9.5 14 L 9.5 30 Q 10 32 10.5 30 L 10.5 14 Z" fill="#6B7560" opacity="0.85" />
             <circle cx="10" cy="8.5" r="8" fill="#6B7560" />
@@ -101,28 +65,19 @@ export default function Afronated() {
           </svg>
         </div>
 
-        {/*
-          ─── CROP MARKS on this Afronated photo ───
-          Same editorial contact-sheet feel as the hero photo.
-          Gives variety between photos (washi tape on About small photo,
-          crop marks here and hero, pins on main photos).
-        */}
-        {/* TL */}
+        {/* Crop marks */}
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ position: "absolute", top: "-8px", left: "-8px", opacity: 0.2, zIndex: 12 }}>
           <path d="M 0 8 L 0 0 L 8 0" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
         </svg>
-        {/* TR */}
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ position: "absolute", top: "-8px", right: "-8px", opacity: 0.2, zIndex: 12 }}>
           <path d="M 6 0 L 14 0 L 14 8" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
         </svg>
-        {/* BL */}
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ position: "absolute", bottom: "-8px", left: "-8px", opacity: 0.2, zIndex: 12 }}>
           <path d="M 0 6 L 0 14 L 8 14" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
         </svg>
-        {/* BR */}
         <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ position: "absolute", bottom: "-8px", right: "-8px", opacity: 0.2, zIndex: 12 }}>
           <path d="M 6 14 L 14 14 L 14 6" stroke="var(--charcoal)" strokeWidth="1" strokeLinecap="round" fill="none" />
@@ -282,6 +237,15 @@ export default function Afronated() {
       <style jsx>{`
         @media (max-width: 768px) {
           .afrn-grid { grid-template-columns: 1fr !important; }
+          /* Hide the absolute-positioned photo on mobile — it overlaps content */
+          .afrn-photo { display: none !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          /* On tablet, keep photo but move it so it doesn't overlap */
+          .afrn-photo {
+            bottom: 20px !important;
+            right: 20px !important;
+          }
         }
       `}</style>
     </section>

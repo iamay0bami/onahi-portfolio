@@ -1,6 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
 
 const VALUES = [
   { icon: "◎", title: "Culture is the foundation",       desc: "Everything starts from culture — it shapes how we see, what we build, and who we build it for." },
@@ -12,23 +10,9 @@ const VALUES = [
 const QUOTE = `"For me, creativity is about amplifying what already exists — the culture, the people, the stories. My job is to make it undeniable."`;
 
 export default function Values() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const photoRef   = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.to(photoRef.current, {
-        y: -7, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 0.5,
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
       id="values"
-      ref={sectionRef}
       className="pinstripe"
       style={{
         background: "var(--cream-warm)",
@@ -46,28 +30,22 @@ export default function Values() {
         pointerEvents: "none",
       }} />
 
-      {/* Diary photo with board pin */}
-      <div
-        ref={photoRef}
-        style={{
-          position: "absolute",
-          bottom: "clamp(24px, 4vw, 56px)",
-          left: "clamp(16px, 3vw, 44px)",
-          zIndex: 5,
-          transform: "rotate(-7deg)",
-          animation: "fadeIn 1s ease 0.3s both",
-        }}
-      >
-        {/* Gold pin — slightly off-center for natural feel */}
+      {/* Diary photo with board pin — hidden on mobile, shown on tablet+ */}
+      <div className="values-photo" style={{
+        position: "absolute",
+        bottom: "clamp(24px, 4vw, 56px)",
+        left: "clamp(16px, 3vw, 44px)",
+        zIndex: 5,
+        transform: "rotate(-7deg)",
+        animation: "fadeIn 1s ease 0.3s both",
+      }}>
+        {/* Gold pin */}
         <div style={{
-          position: "absolute",
-          top: "-24px",
-          left: "45%",
-          transform: "translateX(-50%) rotate(-4deg)",
-          zIndex: 10,
+          position: "absolute", top: "-24px", left: "45%",
+          transform: "translateX(-50%) rotate(-4deg)", zIndex: 10,
           filter: "drop-shadow(0 4px 7px rgba(0,0,0,0.28))",
         }}>
-          <svg width="22" height="36" viewBox="0 0 22 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="22" height="36" viewBox="0 0 22 36" fill="none">
             <ellipse cx="11" cy="18" rx="5.5" ry="1.5" fill="rgba(0,0,0,0.15)" />
             <path d="M 10.5 16 L 10.5 34 Q 11 36 11.5 34 L 11.5 16 Z" fill="#8A7355" opacity="0.85" />
             <circle cx="11" cy="10" r="9" fill="#8A7355" />
@@ -77,29 +55,14 @@ export default function Values() {
           </svg>
         </div>
 
-        {/*
-          ─── DIAGONAL MASKING TAPE STRIP ───
-          A single strip of tape running diagonally across the top-right
-          corner of the photo — like a label stub or a piece of masking
-          tape used to annotate a reference photo on a real moodboard.
-          Warm cream/amber translucent tone. This is the one instance
-          of tape-as-diagonal on the whole site. Unique to this photo.
-        */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: "12px",
-            right: "-18px",
-            width: "56px",
-            height: "14px",
-            background: "rgba(184,153,122,0.36)",
-            borderRadius: "1px",
-            zIndex: 11,
-            transform: "rotate(42deg)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 3px rgba(0,0,0,0.10)",
-          }}
-        />
+        {/* Diagonal masking tape strip */}
+        <div aria-hidden="true" style={{
+          position: "absolute", top: "12px", right: "-18px",
+          width: "56px", height: "14px",
+          background: "rgba(184,153,122,0.36)", borderRadius: "1px",
+          zIndex: 11, transform: "rotate(42deg)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.28), 0 1px 3px rgba(0,0,0,0.10)",
+        }} />
 
         <div className="photo-frame" style={{
           width: "clamp(88px, 11vw, 140px)",
@@ -122,25 +85,15 @@ export default function Values() {
         </div>
       </div>
 
-      {/*
-        ─── TOP RIGHT: Ruled lines cluster ───
-        Matches the notebook aesthetic from About section but placed
-        top-right here for compositional balance. These are the
-        "notepad" moment — creative director's draft lines.
-        Extremely faint at 0.08 opacity.
-      */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "clamp(40px, 6vw, 72px)",
-          right: "clamp(28px, 5vw, 64px)",
-          zIndex: 2,
-          opacity: 0.08,
-          pointerEvents: "none",
-          transform: "rotate(-0.8deg)",
-        }}
-      >
+      {/* Ruled lines — top right */}
+      <div aria-hidden="true" style={{
+        position: "absolute",
+        top: "clamp(40px, 6vw, 72px)",
+        right: "clamp(28px, 5vw, 64px)",
+        zIndex: 2, opacity: 0.08,
+        pointerEvents: "none",
+        transform: "rotate(-0.8deg)",
+      }}>
         <svg width="56" height="34" viewBox="0 0 56 34" fill="none">
           <line x1="0" y1="7"  x2="56" y2="7"  stroke="var(--charcoal)" strokeWidth="1" />
           <line x1="0" y1="14" x2="56" y2="14" stroke="var(--charcoal)" strokeWidth="1" />
@@ -239,6 +192,14 @@ export default function Values() {
         @media (max-width: 768px) {
           .val-header { grid-template-columns: 1fr !important; }
           .val-cards  { grid-template-columns: 1fr !important; }
+          /* Hide diary photo on mobile — it overlaps header text */
+          .values-photo { display: none !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .values-photo {
+            bottom: 16px !important;
+            left: 16px !important;
+          }
         }
       `}</style>
     </section>
